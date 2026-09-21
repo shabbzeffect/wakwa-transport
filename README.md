@@ -20,7 +20,7 @@
 - Add blog post: append to `WAKWA_POSTS`.
 
 ## First 10 Things To Customise
-1. `[[PHONE]]`, `[[WHATSAPP]]`, `[[DISPATCH_PHONE]]`
+1. ~~`[[PHONE]]`~~ ✅ `+254701936990`, `[[WHATSAPP]]`, `[[DISPATCH_PHONE]]`
 2. `[[EMAIL]]`, `[[ADDRESS]]`, `[[CITY]]`, `[[COUNTRY]]`
 3. `[[REG_NO]]` licences
 4. Real fleet counts/tonnage in Home stats
@@ -32,7 +32,7 @@
 10. Photos (CONTENT-CHECKLIST.md)
 
 ## Placeholders used
-`[[PHONE]] [[WHATSAPP]] [[DISPATCH_PHONE]] [[EMAIL]] [[ADDRESS]] [[CITY]] [[COUNTRY]] [[REG_NO]] [[SOCIAL_FACEBOOK]] [[SOCIAL_X]] [[SOCIAL_INSTAGRAM]] [[SOCIAL_LINKEDIN]] [[SOCIAL_TIKTOK]] [[SOCIAL_YOUTUBE]] [[DEVELOPER]] [[SAMPLE]] [[XXX 000X]]`
+`[[WHATSAPP]] [[DISPATCH_PHONE]] [[EMAIL]] [[ADDRESS]] [[CITY]] [[COUNTRY]] [[REG_NO]] [[SOCIAL_FACEBOOK]] [[SOCIAL_X]] [[SOCIAL_INSTAGRAM]] [[SOCIAL_LINKEDIN]] [[SOCIAL_TIKTOK]] [[SOCIAL_YOUTUBE]] [[DEVELOPER]] [[SAMPLE]] [[XXX 000X]]`
 
 ## Next-phase features (shipped)
 - **Driver app + telematics:** `driver.html` (PIN `2468`, GPS pings, auto-share, POD sign-off) → `lib/telematics.js` → live `track.html` (map + stages + 15s refresh). `/api/track.js` syncs across devices on Vercel; offline it uses a localStorage bus. Production: swap endpoint for your GPS vendor webhook or KV (ephemeral serverless memory noted in file).

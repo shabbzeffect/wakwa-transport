@@ -2,7 +2,7 @@ window.WAKWA_SITE = {
   name: "WAKWA SUPPLY & TRANSPORTATION",
   short: "WAKWA",
   tagline: "Transportation to all destinations.",
-  phone: "[[PHONE]]", phoneHref: "tel:[[PHONE]]",
+  phone: "+254701936990", phoneHref: "tel:+254701936990",
   whatsapp: "[[WHATSAPP]]", whatsappLink: "https://wa.me/[[WHATSAPP]]",
   email: "[[EMAIL]]", address: "[[ADDRESS]]", city: "[[CITY]]", country: "[[COUNTRY]]",
   regNo: "[[REG_NO]]", hours: "Mon–Sat 07:00–18:00 · Dispatch 24/7",
