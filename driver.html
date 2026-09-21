@@ -1,0 +1,68 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Driver App | WAKWA Dispatch</title><meta name="description" content="Driver trip check-ins: stages, GPS pings and POD capture. Feeds live tracking.">
+<link rel="icon" href="assets/img/favicon.svg"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="assets/css/styles.css"></head><body>
+<a class="skip" href="#main">Skip to content</a><main id="main"><div class="container section" style="max-width:720px">
+<p class="eyebrow">Driver app</p><h1 style="font-size:clamp(36px,5vw,60px)">ROLLING? PING IT.</h1>
+<div class="card" id="loginCard" style="padding:20px"><h2>Driver sign-in</h2>
+<p style="font-size:13px;color:var(--muted)">Demo PIN: <code>2468</code> (set <code>DRIVER_PIN</code> in env for production + real driver accounts).</p>
+<form id="loginF" style="display:flex;gap:8px"><input class="field" id="driverName" placeholder="Driver name" required><input class="field" id="driverPin" placeholder="PIN" inputmode="numeric" required style="max-width:140px"><button class="btn btn-dark">Start shift</button></form></div>
+<div class="card" id="tripCard" hidden style="padding:20px;margin-top:12px"><h2>Trip ping <span id="who"></span></h2>
+<form id="pingF" style="display:grid;gap:8px">
+<input class="field tabular" id="ref" placeholder="Waybill e.g. WKW-20260921-1234" required aria-label="Waybill">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<select class="field" id="stage" aria-label="Stage"></select>
+<input class="field" id="truck" placeholder="Truck e.g. KDJ 123X · 10T tipper" aria-label="Truck"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<input class="field" id="lat" placeholder="Lat (auto via GPS)" inputmode="decimal" aria-label="Latitude">
+<input class="field" id="lng" placeholder="Lng (auto via GPS)" inputmode="decimal" aria-label="Longitude"></div>
+<input class="field" id="note" placeholder="Note e.g. Loaded 10T ballast, leaving quarry" aria-label="Note">
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn btn-amber" type="submit">📍 Send ping</button>
+<button class="btn btn-outline" type="button" id="gpsBtn">Use my GPS</button>
+<button class="btn btn-outline" type="button" id="autoBtn" aria-pressed="false">Auto-share: off</button>
+<button class="btn btn-outline" type="button" id="podBtn">POD: delivered + sign off</button></div></form>
+<p id="pingOut" role="status" style="font-weight:700"></p>
+<p style="font-size:13px">Customers watch this live at <a id="trackLink" href="track.html">track.html</a>. Pings post to <code>/api/track</code> when deployed, else stay on this device (localStorage bus).</p></div>
+</div></main>
+<script src="content/site.js"></script><script src="lib/telematics.js"></script><script src="assets/js/site.js"></script>
+<script>
+WAKWA_MOUNT('driver.html');
+stage.innerHTML = WakwaTelematics.STAGES.map(function(s){return '<option>'+s+'</option>';}).join('');
+var auto = null;
+loginF.onsubmit = function(e){ e.preventDefault();
+  if(driverPin.value.trim() !== '2468'){ wakwaToast('Wrong PIN (demo: 2468).'); return; }
+  sessionStorage.setItem('wakwa-driver', driverName.value.trim() || 'Driver');
+  loginCard.hidden = true; tripCard.hidden = false;
+  who.textContent = '· ' + sessionStorage.getItem('wakwa-driver');
+  wakwaToast('Shift started. Pings feed live tracking.');
+};
+if(sessionStorage.getItem('wakwa-driver')){ loginCard.hidden = true; tripCard.hidden = false; who.textContent = '· ' + sessionStorage.getItem('wakwa-driver'); }
+gpsBtn.onclick = function(){
+  if(!navigator.geolocation){ wakwaToast('Geolocation not available — enter lat/lng manually.'); return; }
+  navigator.geolocation.getCurrentPosition(function(p){
+    lat.value = p.coords.latitude.toFixed(5); lng.value = p.coords.longitude.toFixed(5);
+    wakwaToast('GPS locked.');
+  }, function(){ wakwaToast('GPS denied — enter lat/lng manually.'); });
+};
+autoBtn.onclick = function(){
+  if(auto){ clearInterval(auto); auto = null; autoBtn.textContent = 'Auto-share: off'; autoBtn.setAttribute('aria-pressed','false'); return; }
+  if(!navigator.geolocation){ wakwaToast('Geolocation unavailable.'); return; }
+  autoBtn.textContent = 'Auto-share: on (30s)'; autoBtn.setAttribute('aria-pressed','true');
+  var tick = function(){ navigator.geolocation.getCurrentPosition(function(p){
+    sendPing(p.coords.latitude.toFixed(5), p.coords.longitude.toFixed(5), true);
+  }); };
+  tick(); auto = setInterval(tick, 30000);
+};
+podBtn.onclick = function(){ stage.value = 'Delivered'; note.value = note.value || 'Delivered, POD signed.'; pingF.requestSubmit(); };
+function sendPing(la, ln, silent){
+  var v = ref.value.trim(); if(!v){ if(!silent) wakwaToast('Enter a waybill first.'); return; }
+  WakwaTelematics.pushPing(v, { lat: parseFloat(la || lat.value), lng: parseFloat(ln || lng.value),
+    speedKph: 0, stage: stage.value, driver: sessionStorage.getItem('wakwa-driver') || '',
+    truck: truck.value, note: note.value });
+  trackLink.href = 'track.html?ref=' + encodeURIComponent(v);
+  pingOut.textContent = '✔ Ping sent for ' + v.toUpperCase() + ' · ' + stage.value + ' · ' + new Date().toLocaleTimeString();
+  if(window.WakwaAnalytics) WakwaAnalytics.track('driver_ping', { stage: stage.value });
+}
+pingF.onsubmit = function(e){ e.preventDefault(); sendPing(); };
+</script></body></html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Get a Quote | WAKWA — Fixed price in ~30 minutes</title><meta name="description" content="Multi-step quote: service, route, cargo, schedule, contact. Instant indicative range + dispatcher confirmation.">
+<link rel="icon" href="assets/img/favicon.svg"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="assets/css/styles.css"></head><body>
+<a class="skip" href="#main">Skip to content</a><main id="main"><div class="container section" style="max-width:900px">
+<p class="eyebrow">Get a quote</p><h1 style="font-size:clamp(36px,5vw,60px)">FIXED PRICE IN ~30 MIN.</h1>
+<div class="progress" aria-hidden="true"><div id="bar"></div></div>
+<p id="stepLabel" class="tabular" style="font-weight:800;margin:8px 0">Step 1 of 6</p>
+<form id="qf" class="card" style="padding:24px" novalidate>
+<div id="steps"></div>
+<div style="display:flex;gap:10px;margin-top:18px"><button type="button" class="btn btn-outline" id="back">← Back</button><button type="button" class="btn btn-amber" id="next" style="margin-left:auto">Next →</button></div>
+<p style="font-size:13px;color:var(--muted)">Draft auto-saves locally. Honeypot + rate-limit active. No spam, ever.</p>
+</form>
+<div class="card" id="estCard" style="padding:20px;margin-top:14px"><h2>Instant estimate</h2><p class="tabular" id="estOut" style="font-size:26px;font-weight:800">—</p>
+<p style="font-size:13px;color:var(--muted)"><b>Indicative only.</b> A dispatcher will confirm the final price within 30 minutes. Model: base/km × distance + tonnage + truck × urgency + loading/offloading + fuel % + border + waiting. Edit assumptions in <code>lib/pricing.js</code>.</p></div>
+</div></main>
+<script src="content/site.js"></script><script src="content/data.js"></script><script src="lib/pricing.js"></script><script src="assets/js/site.js"></script>
+<script>
+WAKWA_MOUNT('quote.html');
+const qs=new URLSearchParams(location.search);
+let step=0, data=JSON.parse(localStorage.getItem('wakwa-quote-draft')||'{}');
+if(qs.get('item')) data.item=qs.get('item'); if(qs.get('truck')) data.truck=qs.get('truck'); if(qs.get('service')) data.service=qs.get('service');
+const stepsEl=document.getElementById('steps');
+const defs=[
+ {t:'Service type',h:`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px" id="svcPick">${['Haulage','Material Supply + Delivery','Equipment Hire','Relocation','Other'].map(s=>`<button type="button" data-v="${s}" class="btn btn-outline pick" style="padding:18px">${s}</button>`).join('')}</div><input type="hidden" id="f_service" required>`},
+ {t:'Route',h:`<label class="lbl">Pickup</label><input class="field" id="f_from" placeholder="e.g. Athi River quarry"><label class="lbl" style="margin-top:10px">Delivery</label><input class="field" id="f_to" placeholder="e.g. Kitengela site"><label class="lbl" style="margin-top:10px">Extra drop-offs (optional)</label><input class="field" id="f_drops" placeholder="Comma separated"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px"><div><label class="lbl">Distance (km)</label><input class="field" id="f_km" type="number" min="1" value="40"></div><div><label class="lbl">Cross-border?</label><select class="field" id="f_border"><option value="">No</option><option value="yes">Yes</option></select></div></div>`},
+ {t:'Cargo',h:`<label class="lbl">Category</label><select class="field" id="f_cargo"><option>Sand / Ballast</option><option>Hardcore / Murram</option><option>Cement / Steel / Blocks</option><option>Machinery</option><option>Containers (20ft/40ft)</option><option>Household / Office</option><option>Water / Fuel / Liquid</option><option>Other</option></select><div id="dyn" style="margin-top:10px"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px"><div><label class="lbl">Tonnes</label><input class="field" id="f_tonnes" type="number" min="0" value="10"></div><div><label class="lbl">Truck type</label><select class="field" id="f_truck"><option value="tipper7">Tipper 7T</option><option value="tipper10" selected>Tipper 10T</option><option value="tipper20">Tipper 20T</option><option value="tipper30">Tipper 30T</option><option value="flatbed">Flatbed</option><option value="lowbed">Low-bed</option><option value="tanker">Tanker/Bowser</option><option value="box">Box truck</option><option value="van">Van/Pickup</option></select></div></div><p id="conv" style="font-size:13px;color:var(--muted)"></p><label style="display:flex;gap:8px;margin-top:8px"><input type="checkbox" id="f_load"> Need loading crew (+KES 2,500)</label><label style="display:flex;gap:8px"><input type="checkbox" id="f_off"> Need offloading (+KES 2,500)</label>`},
+ {t:'Schedule',h:`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div><label class="lbl">Date</label><input class="field" id="f_date" type="date" required></div><div><label class="lbl">Time window</label><select class="field" id="f_win"><option>Morning</option><option>Afternoon</option><option>Night</option></select></div></div><label class="lbl" style="margin-top:10px">Job type</label><select class="field" id="f_freq"><option>One-off</option><option>Daily contract</option><option>Weekly contract</option></select><label class="lbl" style="margin-top:10px">Urgency</label><div style="display:flex;gap:8px" id="urg">${['standard','express','emergency'].map(u=>`<button type="button" data-v="${u}" class="btn btn-outline pick-u">${u}</button>`).join('')}</div>`},
+ {t:'Contact',h:`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div><label class="lbl">Full name *</label><input class="field" id="f_name" required></div><div><label class="lbl">Company</label><input class="field" id="f_co"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px"><div><label class="lbl">Phone *</label><input class="field" id="f_phone" required placeholder="07…"></div><div><label class="lbl">Email</label><input class="field" id="f_email" type="email"></div></div><label class="lbl" style="margin-top:10px">Preferred channel</label><select class="field" id="f_chan"><option>WhatsApp</option><option>Call</option><option>Email</option></select><label class="lbl" style="margin-top:10px">Notes / BOQ</label><textarea class="field" id="f_notes" rows="3" placeholder="Site pin, access notes…"></textarea><label class="lbl" style="margin-top:10px">File (BOQ/site plan)</label><input class="field" id="f_file" type="file"><input type="text" id="f_hp" style="display:none" autocomplete="off" aria-hidden="true">`},
+ {t:'Review & Submit',h:`<div id="review" class="card" style="padding:16px;background:var(--bg)"></div><label style="display:flex;gap:8px;margin-top:10px"><input type="checkbox" id="f_terms" required> I accept the transport terms. *</label><button class="btn btn-amber" id="submitBtn" type="button" style="margin-top:12px;width:100%">Submit Quote Request →</button><a id="waLink" class="btn btn-outline" target="_blank" rel="noopener" style="margin-top:8px;width:100%">Send via WhatsApp instead</a>`}
+];
+function draw(){stepLabel.textContent=`Step ${step+1} of 6 — ${defs[step].t}`;bar.style.width=((step+1)/6*100)+'%';stepsEl.innerHTML=defs[step].h;back.style.display=step===0?'none':'';next.style.display=step===5?'none':'';wire();fill();updateEst();}
+function val(id){const e=document.getElementById(id);return e?e.value:'';}
+function fill(){for(const k of ['from','to','drops','km','cargo','tonnes','truck','date','win','freq','name','co','phone','email','chan','notes','border','service']) {const e=document.getElementById('f_'+k);if(e&&data[k]!=null)e.value=data[k];} if(data.load) {const e=document.getElementById('f_load');if(e)e.checked=true;} if(data.off){const e=document.getElementById('f_off');if(e)e.checked=true;}}
+function save(){for(const k of ['from','to','drops','km','cargo','tonnes','truck','date','win','freq','name','co','phone','email','chan','notes','border','service']) {const e=document.getElementById('f_'+k);if(e)data[k]=e.value;} const l=document.getElementById('f_load'),o=document.getElementById('f_off');if(l)data.load=l.checked;if(o)data.off=o.checked;localStorage.setItem('wakwa-quote-draft',JSON.stringify(data));}
+function wire(){
+ $$('#svcPick .pick').forEach(b=>b.onclick=()=>{$$('#svcPick .pick').forEach(x=>x.className='btn btn-outline pick');b.className='btn btn-amber pick';data.service=b.dataset.v;save();});
+ $$('#urg .pick-u').forEach(b=>b.onclick=()=>{$$('#urg .pick-u').forEach(x=>x.className='btn btn-outline pick-u');b.className='btn btn-amber pick-u';data.urgency=b.dataset.v;save();updateEst();});
+ const c=document.getElementById('f_cargo'); if(c) c.onchange=()=>dyn(c.value);
+ const t=document.getElementById('f_tonnes'); if(t) t.oninput=()=>{save();updateEst();conv();};
+ const km=document.getElementById('f_km'); if(km) km.oninput=()=>{save();updateEst();};
+ const tr=document.getElementById('f_truck'); if(tr) tr.onchange=()=>{save();updateEst();};
+ if(step===5){review.innerHTML=`<b>${data.service||'—'}</b> · ${data.from||'?'} → ${data.to||'?'}<br>${data.cargo||''} · ${data.tonnes||''}T · ${data.truck||''} · ${data.date||''} ${data.win||''}<br>${data.name||''} · ${data.phone||''}`;const sum=`Hi WAKWA, quote request: ${data.from} → ${data.to}, ${data.cargo} ${data.tonnes}T, ${data.date}. — ${data.name} ${data.phone}`;waLink.href=WAKWA_SITE.whatsappLink+'?text='+encodeURIComponent(sum);
+ submitBtn.onclick=submit;}
+ ['f_from','f_to','f_km','f_tonnes','f_name','f_phone','f_date'].forEach(id=>{const e=document.getElementById(id);if(e)e.oninput=()=>{save();updateEst();};});
+}
+function dyn(v){const d=document.getElementById('dyn');if(!d)return;if(v.includes('Sand'))d.innerHTML=`<div class="card" style="padding:12px">💡 Helper: 1 tipper load ≈ 10T ≈ 7 m³ sand. <b id="loads"></b></div>`;else if(v.includes('Machinery'))d.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px"><input class="field" placeholder="L (m)"><input class="field" placeholder="W (m)"><input class="field" placeholder="H (m)"></div><label style="display:flex;gap:8px;margin-top:8px"><input type="checkbox"> Self-loading?</label>`;else if(v.includes('Container'))d.innerHTML=`<select class="field"><option>20ft full</option><option>20ft empty</option><option>40ft full</option><option>40ft empty</option></select>`;else d.innerHTML='';conv();}
+function conv(){const t=parseFloat(val('f_tonnes')||data.tonnes||0),l=document.getElementById('loads');if(l&&t)l.textContent=`≈ ${Math.max(1,Math.ceil(t/10))} tipper load(s).`;}
+function updateEst(){const e=wakwaEstimate({km:parseFloat(val('f_km')||data.km||40),tonnes:parseFloat(val('f_tonnes')||data.tonnes||10),truck:val('f_truck')||data.truck||'tipper10',urgency:data.urgency||'standard',loading:data.load,offloading:data.off,crossBorder:(val('f_border')||data.border)==='yes'});estOut.textContent=`Estimated ${WAKWA_PRICING.currency} ${e.low.toLocaleString()} – ${e.high.toLocaleString()}`;return e;}
+function submit(){save();
+ if(document.getElementById('f_hp').value) return; // honeypot
+ const last=+localStorage.getItem('wakwa-last-submit')||0; if(Date.now()-last<15000){wakwaToast('Please wait 15s between submissions.');return;}
+ if(!data.name||!data.phone||!data.from||!data.to){wakwaToast('Fill name, phone, pickup and delivery.');return;}
+ if(!document.getElementById('f_terms').checked){wakwaToast('Accept terms to continue.');return;}
+ const ref=wakwaRef(), e=updateEst();
+ const all=JSON.parse(localStorage.getItem('wakwa-quotes')||'[]'); all.push({ref,...data,est:e,at:new Date().toISOString(),status:'New'}); localStorage.setItem('wakwa-quotes',JSON.stringify(all));
+ localStorage.setItem('wakwa-last-submit',Date.now());
+ // mailer stub: POST to /api/quote (works on Vercel w/ lib/mailer); here localStorage + thank-you
+ fetch('/api/quote',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ref,...data,est:e})}).catch(()=>{});
+ if(window.gtag) gtag('event','generate_lead',{ref});
+ localStorage.removeItem('wakwa-quote-draft');
+ location.href='thank-you.html?ref='+ref;
+}
+back.onclick=()=>{save();if(step>0){step--;draw();}};next.onclick=()=>{save();if(step<5){step++;draw();window.scrollTo({top:0,behavior:'smooth'});}};
+if(data.from) {const e=document.getElementById('qqFrom');}
+draw(); if(data.cargo) dyn(data.cargo);
+</script></body></html>

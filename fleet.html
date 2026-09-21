@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fleet | WAKWA — Tippers, Trailers, Low-beds, Tankers</title><meta name="description" content="Filterable fleet: tippers 7–30T, flatbeds, low-beds, box trucks, reefers, tankers, skips, vans and plant hire with specs.">
+<link rel="icon" href="assets/img/favicon.svg"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="assets/css/styles.css"></head><body>
+<a class="skip" href="#main">Skip to content</a><main id="main"><div class="container section">
+<p class="eyebrow">Fleet</p><h1 style="font-size:clamp(36px,5vw,64px)">HEAVY METAL, READY.</h1>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:14px 0" id="filters"></div>
+<div id="grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px"></div></div></main>
+<script src="content/site.js"></script><script src="content/data.js"></script><script src="assets/js/site.js"></script>
+<script>WAKWA_MOUNT('fleet.html');
+const cats=['All','Tipper','Trailer / Low-bed','Box / Van','Tanker / Special','Plant'];
+filters.innerHTML=cats.map((c,i)=>`<button class="btn ${i===0?'btn-amber':'btn-outline'}" data-f="${c}" style="padding:8px 14px">${c}</button>`).join('');
+function match(f,cat){if(cat==='All')return true;if(cat==='Tipper')return f.id.includes('tipper');if(cat==='Trailer / Low-bed')return['flatbed','lowbed','hooklift'].includes(f.id);if(cat==='Box / Van')return['box','van','reefer'].includes(f.id);if(cat==='Tanker / Special')return['tanker','skip'].includes(f.id);return f.id==='plant';}
+function render(cat='All'){grid.innerHTML=WAKWA_FLEET.filter(f=>match(f,cat)).map(f=>`<div class="card card-hover" style="padding:20px"><span class="badge ${f.avail==='Available'?'badge-ok':f.avail==='Limited'?'badge-warn':'badge-info'}">${f.avail}</span><h2 style="font-size:28px;margin-top:8px">${f.name}</h2><table class="spec"><tr><th>Capacity</th><td class="tabular"><b>${f.cap}</b></td></tr><tr><th>Axle</th><td>${f.axle}</td></tr><tr><th>Bed</th><td>${f.bed}</td></tr><tr><th>Best for</th><td>${f.use}</td></tr></table><p style="font-size:13px;color:var(--muted)">Photo: ${f.img} — see /public/images/README (swap with real).</p><a class="btn btn-amber" style="margin-top:8px" href="quote.html?truck=${f.id}">Book this type</a></div>`).join('');}
+filters.onclick=e=>{const b=e.target.closest('button');if(!b)return;[...filters.children].forEach(x=>x.className='btn btn-outline');b.className='btn btn-amber';render(b.dataset.f);};render();
+function fit(){grid.style.gridTemplateColumns=innerWidth<800?'1fr':innerWidth<1100?'1fr 1fr':'repeat(3,1fr)'}addEventListener('resize',fit);fit();</script></body></html>

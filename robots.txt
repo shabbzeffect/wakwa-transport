@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://wakwa.example.com/sitemap.xml

@@ -1,0 +1,13 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contact | WAKWA — 24/7 Dispatch</title><meta name="description" content="Call, WhatsApp, email or visit a depot. Emergency dispatch line open 24/7.">
+<link rel="icon" href="assets/img/favicon.svg"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="assets/css/styles.css"></head><body>
+<a class="skip" href="#main">Skip to content</a><main id="main"><div class="container section">
+<p class="eyebrow">Contact</p><h1 style="font-size:clamp(36px,5vw,64px)">TALK TO DISPATCH.</h1>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px" id="cols">
+<div class="card" style="padding:22px"><h2>Lines open 24/7</h2><p>📞 <a href="tel:[[PHONE]]">[[PHONE]]</a> (dispatch/emergency: [[DISPATCH_PHONE]])<br>💬 <a href="https://wa.me/[[WHATSAPP]]">WhatsApp</a><br>✉️ <a href="mailto:[[EMAIL]]">[[EMAIL]]</a><br>📍 [[ADDRESS]], [[CITY]], [[COUNTRY]]<br>🕒 Mon–Sat 07:00–18:00 · Dispatch 24/7</p><h2>Depots</h2><ul><li>HQ — [[ADDRESS]], [[CITY]]</li><li>Nakuru Hub, Mombasa Port Desk, Eldoret Hub, Kisumu Hub (placeholders)</li></ul></div>
+<div class="card" style="padding:22px"><h2>Send a message</h2><form id="f" style="display:grid;gap:8px"><input class="field" required placeholder="Name"><input class="field" required placeholder="Phone"><input class="field" type="email" placeholder="Email"><textarea class="field" rows="4" placeholder="What should we move?"></textarea><button class="btn btn-amber">Send →</button></form></div></div>
+<div class="card" style="padding:8px;margin-top:12px"><iframe title="Depot map" src="https://www.openstreetmap.org/export/embed.html?bbox=36.7%2C-1.4%2C37.0%2C-1.2&layer=mapnik" style="width:100%;height:300px;border:0;border-radius:10px" loading="lazy"></iframe></div>
+</div></main>
+<script src="content/site.js"></script><script src="assets/js/site.js"></script>
+<script>WAKWA_MOUNT('contact.html');f.onsubmit=e=>{e.preventDefault();wakwaToast('Message sent. We reply within 1 business hour.');f.reset();};
+function fit(){cols.style.gridTemplateColumns=innerWidth<900?'1fr':'1fr 1fr'}addEventListener('resize',fit);fit();</script></body></html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Client Portal | WAKWA — Shipments, Invoices, PODs</title><meta name="description" content="Client portal: live shipments, invoices with M-Pesa/Stripe payment, and POD documents.">
+<link rel="icon" href="assets/img/favicon.svg"><link rel="stylesheet" href="assets/css/styles.css"><script src="https://cdn.tailwindcss.com"></script></head><body>
+<a class="skip" href="#main">Skip to content</a><main id="main"><div class="container section" style="max-width:900px">
+<p class="eyebrow">Client portal · v2</p><h1 style="font-size:clamp(36px,5vw,56px)">YOUR LOADS, ONE SCREEN.</h1>
+<div class="card" id="loginCard" style="padding:20px"><h2>Sign in</h2>
+<p style="font-size:13px;color:var(--muted)">Demo: <code>client@demo / 1234</code> · driver: <code>driver@demo / 2468</code> · admin: <code>admin@demo / 7890</code>. Production: magic-link/OTP via Supabase or Auth.js (see lib/auth.js).</p>
+<form id="loginF" style="display:flex;gap:8px;flex-wrap:wrap"><input class="field" id="email" placeholder="email" required style="max-width:240px"><input class="field" id="pin" placeholder="PIN" inputmode="numeric" required style="max-width:140px"><button class="btn btn-amber">Enter</button></form>
+<p id="loginErr" role="alert" style="color:var(--danger)"></p></div>
+<div id="dash" hidden>
+<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><p style="margin:0">Signed in as <b id="who"></b> <span class="badge badge-info" id="role"></span></p>
+<button class="btn btn-outline" id="logoutBtn" style="margin-left:auto;padding:6px 12px">Log out</button></div>
+<div style="display:flex;gap:8px;margin:14px 0" role="tablist" aria-label="Portal sections">
+<button class="btn btn-amber" data-tab="ship" role="tab">Shipments</button>
+<button class="btn btn-outline" data-tab="inv" role="tab">Invoices</button>
+<button class="btn btn-outline" data-tab="doc" role="tab">Documents / POD</button></div>
+<div id="tab-ship" role="tabpanel"><div id="ships" style="display:grid;gap:10px"></div></div>
+<div id="tab-inv" role="tabpanel" hidden><div id="invs" style="display:grid;gap:10px"></div>
+<p><a class="btn btn-amber" href="billing.html">Pay in Billing →</a></p></div>
+<div id="tab-doc" role="tabpanel" hidden>
+<div class="card" style="padding:18px"><h2>Upload POD / document</h2>
+<form id="docF" style="display:flex;gap:8px;flex-wrap:wrap"><input class="field" id="docRef" placeholder="Waybill ref" required style="max-width:220px">
+<input type="file" id="docFile" required aria-label="Document file"><button class="btn btn-dark">Upload</button></form>
+<p style="font-size:12px;color:var(--muted)">Demo stores files in this browser (≤2MB each). Production: direct-upload to S3/R2 via a signed-URL endpoint — same list UI.</p></div>
+<div id="docs" style="display:grid;gap:8px;margin-top:10px"></div></div>
+</div></div></main>
+<script src="content/site.js"></script><script src="lib/auth.js"></script><script src="lib/invoices.js"></script><script src="lib/telematics.js"></script><script src="assets/js/site.js"></script>
+<script>
+WAKWA_MOUNT('portal.html');
+function paint(){ // toggle login vs dashboard
+  var s = WakwaAuth.session();
+  loginCard.hidden = !!s; dash.hidden = !s;
+  if(s){ who.textContent = s.name + ' (' + s.email + ')'; role.textContent = s.role; drawShips(); drawInvs(); drawDocs(); }
+}
+loginF.onsubmit = function(e){ e.preventDefault();
+  var r = WakwaAuth.login(email.value, pin.value);
+  if(!r.ok){ loginErr.textContent = r.error; return; }
+  loginErr.textContent = ''; wakwaToast('Welcome, ' + r.session.name + '.'); paint();
+};
+logoutBtn.onclick = function(){ WakwaAuth.logout(); paint(); };
+document.querySelectorAll('[data-tab]').forEach(function(b){ b.onclick = function(){
+  document.querySelectorAll('[data-tab]').forEach(function(x){ x.className = 'btn btn-outline'; });
+  b.className = 'btn btn-amber';
+  ['ship','inv','doc'].forEach(function(t){ document.getElementById('tab-'+t).hidden = (t !== b.dataset.tab); });
+};});
+function quotes(){ try{ return JSON.parse(localStorage.getItem('wakwa-quotes') || '[]'); }catch(e){ return []; } }
+function drawShips(){
+  var list = quotes();
+  if(!list.length) list = [{ ref:'WKW-DEMO', from:'Athi River', to:'Kitengela', cargo:'Ballast', tonnes:10, status:'In Transit' }];
+  ships.innerHTML = list.map(function(q){
+    var bus = WakwaTelematics.readBus(q.ref);
+    return '<div class="card" style="padding:16px"><b class="tabular">' + q.ref + '</b> <span class="badge badge-info">' + (bus && bus.stage ? bus.stage : (q.status || 'Booked')) + '</span><br>' +
+      '<small>' + (q.from||'') + ' → ' + (q.to||'') + ' · ' + (q.cargo||'') + ' ' + (q.tonnes||'') + 'T</small><br>' +
+      '<a class="btn btn-outline" style="margin-top:8px;padding:6px 12px" href="track.html?ref=' + encodeURIComponent(q.ref) + '">Live track →</a></div>';
+  }).join('');
+}
+function drawInvs(){
+  var invs = WakwaInvoices.all();
+  if(!invs.length) invs = WakwaInvoices.seedDemo();
+  document.getElementById('invs').innerHTML = invs.map(function(i){
+    return '<div class="card" style="padding:16px"><b class="tabular">' + i.id + '</b> <span class="badge ' + (i.status==='paid'?'badge-ok':'badge-warn') + '">' + i.status + '</span><br>' +
+      '<small>' + i.route + ' · ' + WakwaInvoices.money(i.total) + (i.receipt ? ' · ' + i.receipt + ' (' + i.method + ')' : '') + '</small></div>';
+  }).join('') || '<p>No invoices yet.</p>';
+}
+function docs(){ try{ return JSON.parse(localStorage.getItem('wakwa-docs') || '[]'); }catch(e){ return []; } }
+function saveDocs(d){ try{ localStorage.setItem('wakwa-docs', JSON.stringify(d)); }catch(e){ wakwaToast('Storage full — delete old docs or use smaller files.'); } }
+function drawDocs(){
+  var d = docs();
+  if(!d.length) d = [{ ref:'WKW-DEMO', name:'POD-sample.txt', at: new Date().toISOString(), dataUrl:'' }];
+  document.getElementById('docs').innerHTML = d.map(function(x, i){
+    return '<div class="card" style="padding:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><b class="tabular">' + x.ref + '</b><span>' + x.name + '</span><small>' + new Date(x.at).toLocaleString() + '</small>' +
+      (x.dataUrl ? '<a class="btn btn-outline" style="padding:4px 10px" href="' + x.dataUrl + '" download="' + x.name + '">Download</a>' : '<span class="badge">sample</span>') +
+      '<button class="btn btn-outline" style="padding:4px 10px" data-del="' + i + '">Delete</button></div>';
+  }).join('');
+  document.querySelectorAll('[data-del]').forEach(function(b){ b.onclick = function(){
+    var dd = docs(); dd.splice(parseInt(b.dataset.del, 10), 1); saveDocs(dd); drawDocs();
+  };});
+}
+docF.onsubmit = function(e){ e.preventDefault();
+  var f = docFile.files[0]; if(!f) return;
+  if(f.size > 2 * 1024 * 1024){ wakwaToast('Demo limit 2MB per file.'); return; }
+  var rd = new FileReader();
+  rd.onload = function(){ var d = docs(); d.unshift({ ref: docRef.value.trim().toUpperCase(), name: f.name, at: new Date().toISOString(), dataUrl: rd.result }); saveDocs(d); drawDocs(); docF.reset(); wakwaToast('Document saved.'); };
+  rd.readAsDataURL(f);
+};
+paint();
+</script></body></html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Service Detail | WAKWA</title><meta name="description" content="Service detail: inclusions, fleet, process, pricing factors and FAQs."><link rel="icon" href="assets/img/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="assets/css/styles.css"></head><body>
+<a class="skip" href="#main">Skip to content</a><main id="main"><div class="container section" id="wrap"></div></main>
+<script src="content/site.js"></script><script src="content/data.js"></script><script src="content/services.js"></script><script src="assets/js/site.js"></script>
+<script>WAKWA_MOUNT('services.html');
+const slug=new URLSearchParams(location.search).get('slug')||WAKWA_SERVICES[0].slug;
+const s=WAKWA_SERVICES.find(x=>x.slug===slug)||WAKWA_SERVICES[0];
+document.title=s.title+' | WAKWA';
+const rel=WAKWA_SERVICES.filter(x=>x.slug!==s.slug).slice(0,3);
+wrap.innerHTML=`<p><a href="services.html">← All services</a></p><p class="eyebrow">${s.icon} Service</p>
+<h1 style="font-size:clamp(36px,5vw,64px)">${s.title}</h1><p style="font-size:19px;max-width:70ch">${s.body}</p>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:18px" id="cols">
+<div class="card" style="padding:20px"><h2>What's included</h2><ul>${s.included.map(i=>`<li>✔ ${i}</li>`).join('')}</ul></div>
+<div class="card" style="padding:20px"><h2>Ideal for</h2><p>${s.ideal}</p><h2>Fleet used</h2><p>${s.fleet.join(', ')}</p><a class="btn btn-outline" href="fleet.html">See fleet</a></div>
+<div class="card" style="padding:20px"><h2>Process</h2><ol><li>Request quote</li><li>Fixed price in 30 min</li><li>Load + GPS link</li><li>POD + invoice</li></ol><h2>Pricing factors</h2><p style="color:var(--muted)">Distance, tonnage, truck size, urgency, loading/offloading, border fees.</p></div></div>
+<h2 style="margin-top:22px">FAQs</h2><div style="display:grid;gap:10px">${(s.faqs.length?s.faqs:[['How fast?','Same-day in town, 24–72h up-country.'],['How priced?','Indicative range instantly, fixed price by dispatcher.']]).map(([q,a])=>`<div class="accordion-item"><button class="accordion-btn">${q}<span>+</span></button><div class="accordion-panel"><p>${a}</p></div></div>`).join('')}</div>
+<h2 style="margin-top:22px">Related</h2><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px" id="rel">${rel.map(r=>`<a class="card card-hover" href="service-detail.html?slug=${r.slug}" style="padding:16px;text-decoration:none;color:inherit"><b>${r.title}</b><br><small>${r.short}</small></a>`).join('')}</div>
+<div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap"><a class="btn btn-amber" href="quote.html?service=${s.slug}">Get a Quote for this</a><a class="btn btn-outline" href="tel:[[PHONE]]">Call Dispatch</a></div>
+<script type="application\/ld+json">{"@context":"https://schema.org","@type":"Service","name":${JSON.stringify(s.title)},"provider":{"@type":"Organization","name":"WAKWA SUPPLY & TRANSPORTATION"}}<\/script>`;
+$$('.accordion-btn').forEach(b=>b.onclick=()=>{const it=b.parentElement,open=it.classList.contains('open');$$('.accordion-item').forEach(x=>{x.classList.remove('open');x.querySelector('.accordion-panel').style.maxHeight=null});if(!open){it.classList.add('open');const p=it.querySelector('.accordion-panel');p.style.maxHeight=p.scrollHeight+'px';}});
+function fit(){cols.style.gridTemplateColumns=innerWidth<900?'1fr':'1fr 1fr 1fr';rel.style.gridTemplateColumns=innerWidth<800?'1fr':'repeat(3,1fr)'}addEventListener('resize',fit);fit();</script></body></html>

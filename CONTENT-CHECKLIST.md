@@ -1,0 +1,15 @@
+# CONTENT CHECKLIST — what the owner must supply
+- [ ] Real phone, WhatsApp, dispatch line, email
+- [ ] HQ + depot addresses, hours, registration/licence numbers
+- [ ] Insurance + NTSA certificates (PDF/photo for compliance strip)
+- [ ] Fleet list: exact truck types, plates (masked), capacities, photos
+- [ ] Material sources + current rates (for BOQ pricing, kept private)
+- [ ] 10 coverage towns + time bands confirmation
+- [ ] 8 testimonials: replace [[SAMPLE]] names or get written consent
+- [ ] 4 project photos (before/after) + tonnage records
+- [ ] Team names/roles/photos
+- [ ] Logo final (or keep SVG wordmark), brand sign-off on amber/black
+- [ ] M-Pesa/bank details for invoices, terms (7/14/30 days?)
+- [ ] Careers: live roles + HR contact
+- [ ] Social URLs, GA/Meta/GTM IDs
+- [ ] Lawyer review of privacy/terms/cookies

@@ -1,0 +1,22 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Load Calculator | WAKWA Tools</title><meta name="description" content="Slab estimator, truck trips calculator and m³ to tonnes converter for sand, ballast, hardcore and murram.">
+<link rel="icon" href="../assets/img/favicon.svg"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="../assets/css/styles.css"></head><body>
+<a class="skip" href="#main">Skip to content</a><main id="main"><div class="container section" style="max-width:860px">
+<p class="eyebrow">Tools</p><h1 style="font-size:clamp(34px,5vw,58px)">LOAD CALCULATOR.</h1>
+<div class="card" style="padding:20px"><h2>1) Slab / foundation estimator</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px" id="g1"><div><label class="lbl">Length (m)</label><input class="field" id="L" type="number" value="12"></div><div><label class="lbl">Width (m)</label><input class="field" id="W" type="number" value="10"></div><div><label class="lbl">Thick (mm)</label><input class="field" id="T" type="number" value="150"></div><div><label class="lbl">Wastage %</label><input class="field" id="Ws" type="number" value="8"></div></div>
+<p id="o1" class="tabular" style="font-weight:800;margin-top:10px"></p></div>
+<div class="card" style="padding:20px;margin-top:12px"><h2>2) m³ ↔ tonnes</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px"><div><label class="lbl">Material</label><select class="field" id="mat"><option value="1.5">Sand (1.5 T/m³)</option><option value="1.45">Ballast (1.45)</option><option value="1.6">Hardcore (1.6)</option><option value="1.7">Murram (1.7)</option></select></div><div><label class="lbl">m³</label><input class="field" id="m3" type="number" value="7"></div><div><label class="lbl">Density (editable)</label><input class="field" id="den" type="number" step="0.05" value="1.5"></div></div>
+<p id="o2" class="tabular" style="font-weight:800;margin-top:10px"></p></div>
+<div class="card" style="padding:20px;margin-top:12px"><h2>3) Truck trips</h2><label class="lbl">Total tonnes</label><input class="field" id="tt" type="number" value="40" style="max-width:240px"><p id="o3" class="tabular" style="font-weight:800"></p>
+<a class="btn btn-amber" href="../quote.html" style="margin-top:8px">Price these trips →</a></div></div></main>
+<script src="../content/site.js"></script><script src="../assets/js/site.js"></script>
+<script>WAKWA_MOUNT('quote.html');
+function calc(){const L=+L_.value||+document.getElementById('L').value,W=+document.getElementById('W').value,T=+document.getElementById('T').value/1000,Ws=1+(+document.getElementById('Ws').value/100);
+const vol=L*W*T*Ws, bal=vol*1.45*2.4/3.4|0, sand=vol*1.5*1.6/3.4|0; // simplified mix split
+document.getElementById('o1').textContent=`Concrete ≈ ${vol.toFixed(1)} m³ → ballast ≈ ${bal}T, sand ≈ ${sand}T, cement ≈ ${Math.ceil(vol*6.5)} bags.`;
+const m3=+document.getElementById('m3').value,d=+document.getElementById('den').value;document.getElementById('den').value=document.getElementById('mat').value;document.getElementById('o2').textContent=`${m3} m³ ≈ ${(m3*(+document.getElementById('mat').value)).toFixed(1)} tonnes (adjust density as needed).`;
+const t=+document.getElementById('tt').value;document.getElementById('o3').textContent=`${t}T = ${Math.ceil(t/7)}× 7T · ${Math.ceil(t/10)}× 10T · ${Math.ceil(t/20)}× 20T · ${Math.ceil(t/30)}× 30T trips.`;}
+const L_=document.getElementById('L');['L','W','T','Ws','m3','mat','tt'].forEach(id=>document.getElementById(id).oninput=calc);calc();
+function fit(){g1.style.gridTemplateColumns=innerWidth<700?'1fr 1fr':'1fr 1fr 1fr 1fr'}addEventListener('resize',fit);fit();</script></body></html>

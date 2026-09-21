@@ -1,0 +1,8 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Legal | WAKWA</title><link rel="icon" href="assets/img/favicon.svg"><link rel="stylesheet" href="assets/css/styles.css"><script src="https://cdn.tailwindcss.com"></script></head><body>
+<main><div class="container section" style="max-width:760px" id="w"></div></main>
+<script src="content/site.js"></script><script src="assets/js/site.js"></script>
+<script>WAKWA_MOUNT('privacy.html');const p=new URLSearchParams(location.search).get('p')||'privacy';
+const T={privacy:['Privacy Policy','We collect name, phone, email, route and cargo to quote and deliver. We never sell data. POD photos may show site locations. Request deletion via [[EMAIL]]. Analytics loads only after consent. <!-- Have a lawyer review this template before launch. -->'],
+terms:['Terms of Service','Quotes valid 7 days. 70% mobilisation on one-off jobs. Free cancellation 12h+ before loading. Liability limited to declared value with goods-in-transit cover where purchased. <!-- Have a lawyer review this. -->'],
+cookies:['Cookie Policy','We use consent-gated analytics + functional storage (theme, quote drafts). Decline = no tracking scripts load. <!-- Have a lawyer review this. -->']};
+document.title=T[p][0]+' | WAKWA';w.innerHTML=`<p class="eyebrow">Legal</p><h1 style="font-size:48px">${T[p][0].toUpperCase()}.</h1><p>${T[p][1]}</p><p><a href="privacy.html?p=privacy">Privacy</a> · <a href="privacy.html?p=terms">Terms</a> · <a href="privacy.html?p=cookies">Cookies</a></p>`;</script></body></html>

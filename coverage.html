@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coverage | WAKWA — Where We Go</title><meta name="description" content="Nationwide + cross-border corridors, delivery time bands, hub cities and off-grid last-mile. Check your location.">
+<link rel="icon" href="assets/img/favicon.svg"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><link rel="stylesheet" href="assets/css/styles.css">
+<style>#map{height:420px;border-radius:14px;border:1px solid var(--line)}</style></head><body>
+<a class="skip" href="#main">Skip to content</a><main id="main"><div class="container section">
+<p class="eyebrow">Coverage</p><h1 style="font-size:clamp(36px,5vw,64px)">WE DELIVER OFF-GRID.</h1>
+<p>Same-day in town · 24–48h inter-county · 3–5 days remote & cross-border.</p>
+<div id="map" role="application" aria-label="Coverage map"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:14px" id="cols">
+<div class="card" style="padding:18px"><h2>Hubs</h2><ul id="hubs"></ul></div>
+<div class="card" style="padding:18px"><h2>Corridors</h2><ul id="cors"></ul></div>
+<div class="card" style="padding:18px"><h2>Check my location</h2><form id="f" style="display:flex;gap:8px"><input class="field" id="in" placeholder="Town / site"><button class="btn btn-amber">Check</button></form><p id="out" role="status"></p><a href="quote.html">Get price →</a></div></div>
+<h2 style="margin-top:18px">Sample towns</h2><div id="cities" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+</div></main>
+<script src="content/site.js"></script><script src="content/data.js"></script><script src="assets/js/site.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>WAKWA_MOUNT('coverage.html');
+hubs.innerHTML=WAKWA_COVERAGE.hubs.map(h=>`<li>${h}</li>`).join('');cors.innerHTML=WAKWA_COVERAGE.corridors.map(c=>`<li>${c}</li>`).join('');
+cities.innerHTML=WAKWA_COVERAGE.cities.map(c=>`<a class="badge badge-info" href="city.html?c=${encodeURIComponent(c)}" style="text-decoration:none">${c}</a>`).join('');
+f.onsubmit=e=>{e.preventDefault();out.innerHTML=in.value?`✔ <b>${in.value}</b>: covered (24–72h typical). <a href="quote.html">Price it →</a>`:'Type a town.';};
+try{const map=L.map('map').setView([-0.5,37.5],6);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
+[[-1.29,36.82,'[[CITY]] HQ'],[-0.28,36.07,'Nakuru Hub'],[-4.05,39.67,'Mombasa Port'],[0.51,35.27,'Eldoret Hub'],[-0.09,34.77,'Kisumu Hub']].forEach(([a,b,t])=>L.marker([a,b]).addTo(map).bindPopup(t));
+L.polyline([[-4.05,39.67],[-1.29,36.82],[-0.28,36.07],[0.51,35.27]],{color:'#F5A524',weight:4,dashArray:'8 8'}).addTo(map);
+L.polyline([[-1.29,36.82],[-0.09,34.77]],{color:'#0EA5E9',weight:3,dashArray:'6 6'}).addTo(map);
+}catch(err){document.getElementById('map').innerHTML='<p class="card" style="padding:20px">Map offline — we still deliver. Call [[PHONE]].</p>';}
+function fit(){cols.style.gridTemplateColumns=innerWidth<900?'1fr':'1fr 1fr 1fr'}addEventListener('resize',fit);fit();</script></body></html>

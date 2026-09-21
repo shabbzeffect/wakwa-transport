@@ -1,0 +1,10 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Post | WAKWA Blog</title><link rel="icon" href="assets/img/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="assets/css/styles.css"></head><body>
+<a class="skip" href="#main">Skip to content</a><main id="main"><div class="container section" style="max-width:760px" id="wrap"></div></main>
+<script src="content/site.js"></script><script src="content/data.js"></script><script src="assets/js/site.js"></script>
+<script>WAKWA_MOUNT('blog.html');
+const p=WAKWA_POSTS.find(x=>x.slug===new URLSearchParams(location.search).get('slug'))||WAKWA_POSTS[0];
+document.title=p.title+' | WAKWA';
+wrap.innerHTML=`<p><a href="blog.html">← All guides</a></p><p class="eyebrow">${p.date} · ${p.read}</p><h1 style="font-size:clamp(32px,4vw,54px)">${p.title}</h1><p style="font-size:18px">${p.ex}</p><div class="card" style="padding:24px;line-height:1.8">${p.body}</div><div class="card" style="padding:20px;margin-top:14px"><h2>Need this done for you?</h2><a class="btn btn-amber" href="quote.html">Get a Quote →</a></div><script type="application\/ld+json">{"@context":"https://schema.org","@type":"Article","headline":${JSON.stringify(p.title)}}<\/script>`;</script></body></html>

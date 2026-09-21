@@ -1,0 +1,13 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blog | WAKWA Site Guides</title><meta name="description" content="Practical guides: tonnage estimators, tipper vs trailer, cross-border checklist, pour-day logistics.">
+<link rel="icon" href="assets/img/favicon.svg"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="assets/css/styles.css"></head><body>
+<a class="skip" href="#main">Skip to content</a><main id="main"><div class="container section">
+<p class="eyebrow">Resources</p><h1 style="font-size:clamp(36px,5vw,64px)">SITE GUIDES.</h1>
+<input id="q" class="field" placeholder="Search guides…" style="max-width:440px;margin:10px 0">
+<div id="grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px"></div></div></main>
+<script src="content/site.js"></script><script src="content/data.js"></script><script src="assets/js/site.js"></script>
+<script>WAKWA_MOUNT('blog.html');
+function render(f=''){grid.innerHTML=WAKWA_POSTS.filter(p=>(p.title+p.body).toLowerCase().includes(f.toLowerCase())).map(p=>`<a class="card card-hover" href="blog-post.html?slug=${p.slug}" style="padding:20px;text-decoration:none;color:inherit"><small>${p.date} · ${p.read}</small><h2>${p.title}</h2><p style="color:var(--muted)">${p.ex}</p></a>`).join('');}
+q.oninput=e=>render(e.target.value);render();
+function fit(){grid.style.gridTemplateColumns=innerWidth<800?'1fr':innerWidth<1100?'1fr 1fr':'repeat(3,1fr)'}addEventListener('resize',fit);fit();</script></body></html>

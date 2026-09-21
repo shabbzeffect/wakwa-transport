@@ -1,0 +1,13 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Projects | WAKWA Case Studies</title><meta name="description" content="Tonnage moved, distances, durations and client quotes from real site work.">
+<link rel="icon" href="assets/img/favicon.svg"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="assets/css/styles.css"></head><body>
+<a class="skip" href="#main">Skip to content</a><main id="main"><div class="container section">
+<p class="eyebrow">Proof</p><h1 style="font-size:clamp(36px,5vw,64px)">TONNAGE TALKS.</h1>
+<div id="grid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px"></div></div></main>
+<script src="content/site.js"></script><script src="content/data.js"></script><script src="assets/js/site.js"></script>
+<script>WAKWA_MOUNT('projects.html');
+const q=new URLSearchParams(location.search).get('slug');
+const list=q?WAKWA_PROJECTS.filter(p=>p.slug===q):WAKWA_PROJECTS;
+grid.innerHTML=list.map(p=>`<article class="card" style="padding:22px"><h2 style="font-size:30px">${p.title}</h2><p style="color:var(--muted)">${p.client}</p><div style="display:flex;gap:18px" class="tabular"><span><b>${p.tonnes}</b><br><small>TONNES</small></span><span><b>${p.dist}</b><br><small>DIST</small></span><span><b>${p.days}</b><br><small>TIME</small></span></div><p><b>Challenge:</b> ${p.challenge}<br><b>Solution:</b> ${p.solution}<br><b>Result:</b> ${p.result}</p><p><i>“${p.quote}”</i></p><a class="btn btn-amber" href="quote.html">Start your project →</a></article>`).join('');
+function fit(){grid.style.gridTemplateColumns=innerWidth<900?'1fr':'1fr 1fr'}addEventListener('resize',fit);fit();</script></body></html>

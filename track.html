@@ -1,0 +1,62 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Track Shipment | WAKWA Live GPS</title><meta name="description" content="Live GPS tracking: driver pings, map position, stage timeline and ETA.">
+<link rel="icon" href="assets/img/favicon.svg"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><link rel="stylesheet" href="assets/css/styles.css">
+<style>#liveMap{height:320px;border-radius:12px;border:1px solid var(--line)}</style></head><body>
+<a class="skip" href="#main">Skip to content</a><main id="main"><div class="container section" style="max-width:760px">
+<p class="eyebrow">Tracking</p><h1 style="font-size:clamp(36px,5vw,60px)">WHERE'S MY LOAD?</h1>
+<form id="f" class="card" style="padding:18px;display:flex;gap:8px"><input class="field tabular" id="in" placeholder="Waybill e.g. WKW-20260921-1234" aria-label="Waybill"><button class="btn btn-amber">Track</button></form>
+<p style="font-size:13px;color:var(--muted)">Live when the driver pings from the driver app (GPS → <code>/api/track</code> on Vercel, localStorage bus offline). Otherwise simulated demo position. Try <code>WKW-DEMO</code>.</p>
+<div id="out" style="margin-top:14px"></div></div></main>
+<script src="content/site.js"></script><script src="lib/telematics.js"></script><script src="assets/js/site.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+WAKWA_MOUNT('track.html');
+var stages = WakwaTelematics.STAGES, map = null, marker = null, timer = null, current = null;
+function stageIdx(s){ var i = stages.indexOf(s); return i < 0 ? 2 : i; }
+function ensureMap(lat, lng){
+  if(map){ marker.setLatLng([lat, lng]); map.panTo([lat, lng]); return; }
+  map = L.map('liveMap').setView([lat, lng], 8);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
+  marker = L.marker([lat, lng]).addTo(map).bindPopup('Truck').openPopup();
+  WakwaTelematics.CORRIDOR && L.polyline(WakwaTelematics.CORRIDOR, {color:'#F5A524', weight:3, dashArray:'8 8'}).addTo(map);
+}
+function srcBadge(p){
+  if(p.source === 'live') return '<span class="badge badge-ok">● LIVE GPS</span>';
+  if(p.source === 'driver') return '<span class="badge badge-ok">● DRIVER PING</span>';
+  return '<span class="badge badge-warn">○ SIMULATED DEMO</span>';
+}
+function render(ref, p){
+  var idx = stageIdx(p.stage);
+  out.innerHTML =
+    '<div class="card" style="padding:20px"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><h2 class="tabular" style="margin:0">' + ref + '</h2>' + srcBadge(p) + '</div>' +
+    '<p style="margin:8px 0"><b>' + p.stage + '</b> · ' + (p.speedKph || 0) + ' kph · updated ' + new Date(p.updatedAt).toLocaleString() +
+    (p.driver ? ' · Driver: ' + p.driver : '') + (p.truck ? ' · ' + p.truck : '') + '</p>' +
+    (p.note ? '<p style="font-size:14px;color:var(--muted)">“' + p.note.replace(/</g,'&lt;') + '”</p>' : '') +
+    '<div id="liveMap" role="application" aria-label="Live truck position"></div>' +
+    '<div class="timeline" style="margin-top:14px">' + stages.map(function(s,i){
+      return '<div class="timeline-item" style="opacity:' + (i<=idx?1:.4) + '"><b>' + s + '</b><br><small>' + (i<=idx?'✔ reached':'Pending') + '</small></div>';
+    }).join('') + '</div>' +
+    '<p style="font-size:13px;color:var(--muted)">Auto-refresh every 15s. Same-browser driver pings appear instantly. <a href="driver.html">Driver app →</a></p></div>';
+  try{ ensureMap(p.lat, p.lng); }catch(e){ document.getElementById('liveMap').innerHTML = '<p>Map offline — position: ' + p.lat.toFixed(3) + ', ' + p.lng.toFixed(3) + '</p>'; }
+}
+function lookup(ref){
+  ref = String(ref || '').trim().toUpperCase() || 'WKW-DEMO';
+  in.value = ref; current = ref;
+  WakwaTelematics.getPosition(ref).then(function(p){ render(ref, p); });
+  if(window.WakwaAnalytics) WakwaAnalytics.track('track_lookup', { ref: ref });
+}
+f.onsubmit = function(e){ e.preventDefault(); lookup(in.value); restart(); };
+function restart(){
+  if(timer) clearInterval(timer);
+  timer = setInterval(function(){ if(current) WakwaTelematics.getPosition(current).then(function(p){ render(current, p); }); }, (window.WAKWA_TELEMATICS||{}).pollMs || 15000);
+}
+window.addEventListener('storage', function(e){ // instant same-device updates
+  if(current && e.key === 'wakwa-telemetry:' + current){
+    try{ var p = JSON.parse(e.newValue); p.source = 'driver'; render(current, p); }catch(err){}
+  }
+});
+var preset = new URLSearchParams(location.search).get('ref');
+lookup(preset || 'WKW-DEMO'); restart();
+</script></body></html>

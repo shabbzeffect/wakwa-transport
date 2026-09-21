@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Billing & Payments | WAKWA</title><meta name="description" content="View invoices and pay via M-Pesa STK push or Stripe. VAT receipts issued instantly.">
+<link rel="icon" href="assets/img/favicon.svg"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="assets/css/styles.css"></head><body>
+<a class="skip" href="#main">Skip to content</a><main id="main"><div class="container section" style="max-width:860px">
+<p class="eyebrow">Billing</p><h1 style="font-size:clamp(36px,5vw,60px)">PAY IN 30 SECONDS.</h1>
+<div style="display:grid;grid-template-columns:280px 1fr;gap:14px" id="cols">
+<div class="card" style="padding:18px"><h2>Invoices</h2><div id="list" style="display:grid;gap:8px"></div>
+<button class="btn btn-outline" id="fromQuoteBtn" style="margin-top:10px">+ Invoice from latest quote</button></div>
+<div><div id="doc"></div>
+<div class="card no-print" style="padding:18px;margin-top:12px"><h2>Pay this invoice</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="payGrid">
+<div><h3>📱 M-Pesa</h3><form id="mpesaF" style="display:grid;gap:8px">
+<input class="field" id="phone" placeholder="07XXXXXXXX" inputmode="tel" aria-label="M-Pesa phone">
+<button class="btn btn-amber" id="stkBtn">Send STK push</button></form>
+<p id="stkOut" role="status" style="font-size:14px"></p></div>
+<div><h3>💳 Card (Stripe)</h3><p style="font-size:14px;color:var(--muted)">International cards. KES charged.</p>
+<button class="btn btn-dark" id="stripeBtn">Pay with card</button><p id="stripeOut" style="font-size:14px"></p></div></div>
+<button class="btn btn-outline" onclick="window.print()" style="margin-top:10px">🖨 Print invoice</button></div></div></div></div></main>
+<script src="content/site.js"></script><script src="lib/invoices.js"></script><script src="lib/payments.js"></script><script src="assets/js/site.js"></script>
+<script>
+WAKWA_MOUNT('billing.html');
+var selected = null;
+function drawList(){
+  var invs = WakwaInvoices.seedDemo();
+  list.innerHTML = invs.map(function(i){
+    return '<button class="btn ' + (selected===i.id?'btn-amber':'btn-outline') + '" data-id="' + i.id + '" style="justify-content:space-between">' +
+      '<span>' + i.id + '</span><span class="tabular">' + WakwaInvoices.money(i.total) + ' · ' + i.status + '</span></button>';
+  }).join('');
+  list.querySelectorAll('button').forEach(function(b){ b.onclick = function(){ selected = b.dataset.id; drawList(); drawDoc(); }; });
+  if(!selected && invs.length){ selected = invs[0].id; drawDoc(); }
+}
+function drawDoc(){
+  var inv = WakwaInvoices.get(selected); if(!inv) return;
+  doc.innerHTML = WakwaInvoices.render(inv);
+  var paid = new URLSearchParams(location.search).get('paid');
+  if(paid === inv.id && inv.status !== 'paid'){ WakwaPay.complete(inv.id, 'stripe', 'STRIPE-' + Date.now()); drawList(); drawDoc(); }
+}
+fromQuoteBtn.onclick = function(){
+  var quotes = []; try{ quotes = JSON.parse(localStorage.getItem('wakwa-quotes') || '[]'); }catch(e){}
+  var q = quotes[0] || { ref:'WKW-DEMO', from:'Athi River', to:'Kitengela', cargo:'Ballast', tonnes:10, name:'Demo', est:{mid:48500} };
+  var inv = WakwaInvoices.fromQuote(q);
+  selected = inv.id; drawList(); drawDoc(); wakwaToast('Invoice ' + inv.id + ' created.');
+};
+mpesaF.onsubmit = function(e){
+  e.preventDefault();
+  var inv = WakwaInvoices.get(selected); if(!inv) return;
+  if(inv.status === 'paid'){ stkOut.textContent = 'Already paid (' + inv.receipt + ').'; return; }
+  stkBtn.disabled = true; stkBtn.textContent = 'Check your phone… (stub: 6s)';
+  WakwaPay.mpesaStkPush(inv, phone.value).then(function(r){
+    WakwaPay.complete(inv.id, 'mpesa', r.receipt);
+    stkOut.textContent = '✔ Paid. Receipt ' + r.receipt + (r.stub ? ' (STUB — no money moved)' : '');
+    drawList(); drawDoc();
+  }).catch(function(err){ stkOut.textContent = '✖ ' + err.message; })
+  .then(function(){ stkBtn.disabled = false; stkBtn.textContent = 'Send STK push'; });
+};
+stripeBtn.onclick = function(){
+  var inv = WakwaInvoices.get(selected); if(!inv) return;
+  stripeOut.textContent = 'Opening checkout…';
+  WakwaPay.stripeCheckout(inv).then(function(r){
+    if(r.stub){ WakwaPay.complete(inv.id, 'stripe', r.receipt); stripeOut.textContent = '✔ Paid (STUB). ' + r.note; drawList(); drawDoc(); }
+  }).catch(function(err){ stripeOut.textContent = '✖ ' + err.message; });
+};
+drawList(); drawDoc();
+function fit(){ cols.style.gridTemplateColumns = innerWidth < 860 ? '1fr' : '280px 1fr'; payGrid.style.gridTemplateColumns = innerWidth < 640 ? '1fr' : '1fr 1fr'; }
+addEventListener('resize', fit); fit();
+</script></body></html>

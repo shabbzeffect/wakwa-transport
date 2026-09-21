@@ -1,0 +1,13 @@
+# secrets — never commit real env files
+.env
+.env.local
+.env.*.local
+
+# deps / build
+node_modules/
+.vercel/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

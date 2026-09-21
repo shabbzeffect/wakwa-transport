@@ -1,0 +1,13 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Materials Supply Catalogue | WAKWA</title><meta name="description" content="Sand, ballast, hardcore, cement, steel, blocks and more — sourced and delivered. Prices hidden by design: request a quote.">
+<link rel="icon" href="assets/img/favicon.svg"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="assets/css/styles.css"></head><body>
+<a class="skip" href="#main">Skip to content</a><main id="main"><div class="container section">
+<p class="eyebrow">Supply</p><h1 style="font-size:clamp(36px,5vw,64px)">ONE INVOICE. ONE PARTNER.</h1>
+<p>Prices hidden by design — every load depends on source + distance. Tap <b>Request Price</b> and get a BOQ-ready quote in ~30 minutes.</p>
+<div id="grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px"></div>
+<div class="card" style="padding:20px;margin-top:16px"><h2>Have a BOQ?</h2><p>Upload it on the quote page — we price the full schedule in 24h.</p><a class="btn btn-amber" href="quote.html">Send BOQ →</a></div></div></main>
+<script src="content/site.js"></script><script src="content/data.js"></script><script src="assets/js/site.js"></script>
+<script>WAKWA_MOUNT('supply.html');
+grid.innerHTML=WAKWA_MATERIALS.map(m=>`<div class="card card-hover" style="padding:20px"><h2>${m.name}</h2><p style="color:var(--muted)">per ${m.unit} · ${m.note}</p><p class="tabular">Typical truckload: <b>${m.truckload}</b></p><a class="btn btn-amber" href="quote.html?item=${encodeURIComponent(m.name)}">Request Price</a></div>`).join('');
+function fit(){grid.style.gridTemplateColumns=innerWidth<800?'1fr':innerWidth<1100?'1fr 1fr':'repeat(3,1fr)'}addEventListener('resize',fit);fit();</script></body></html>

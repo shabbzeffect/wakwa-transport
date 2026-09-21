@@ -1,0 +1,21 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>About Us | WAKWA</title><meta name="description" content="Story, mission, vision, values, team, milestones, licences and CSR. We move what builds nations.">
+<link rel="icon" href="assets/img/favicon.svg"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="assets/css/styles.css"></head><body>
+<a class="skip" href="#main">Skip to content</a><main id="main"><div class="container section">
+<p class="eyebrow">About</p><h1 style="font-size:clamp(36px,5vw,64px)">WE MOVE WHAT BUILDS NATIONS.</h1>
+<p style="max-width:72ch;font-size:18px">WAKWA started with one tipper and a simple rule: show up on time, every time. Today we run tippers, trailers, low-beds, tankers and last-mile pickups — plus bulk materials sourcing — for contractors, factories, farms, NGOs and homeowners across the country and the region.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:14px" id="mvv">
+<div class="card" style="padding:20px"><h2>Mission</h2><p>Deliver every load safely, on time, at a fair fixed price — anywhere.</p></div>
+<div class="card" style="padding:20px"><h2>Vision</h2><p>The most trusted heavy-transport partner in the region.</p></div>
+<div class="card" style="padding:20px"><h2>Promise</h2><p>Transportation to all destinations. Including off-road.</p></div></div>
+<h2 style="margin-top:20px">Values</h2><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px" id="vals"></div>
+<h2 style="margin-top:20px">Milestones</h2><div class="timeline" id="tl"></div>
+<h2 style="margin-top:20px">Leadership</h2><div id="team" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px"></div>
+<h2 style="margin-top:20px">Licences & CSR</h2><p>Road-authority licence [[REG_NO]], carrier liability + goods-in-transit cover, axle-load compliance, driver safety program. CSR: 2% of fleet days for community water/emergency runs + road-safety school visits. (Replace with real certificates.)</p>
+</div></main>
+<script src="content/site.js"></script><script src="content/data.js"></script><script src="assets/js/site.js"></script>
+<script>WAKWA_MOUNT('about.html');
+vals.innerHTML=[['Safety','Nobody rushes an unsafe load.'],['Punctuality','Dawn dispatch is sacred.'],['Integrity','Fixed price means fixed.'],['Capacity','Right truck, always available.'],['Care','Your site is our reputation.']].map(([t,d])=>`<div class="card" style="padding:16px"><b>${t}</b><br><small>${d}</small></div>`).join('');
+tl.innerHTML=[['Year 1','First tipper, quarry runs.'],['Year 3','10 trucks + dispatch desk 24/7.'],['Year 5','Low-beds + cross-border corridor.'],['Year 7','Materials supply arm + 3PL.'],['Today','48+ units, GPS-tracked, nationwide.']].map(([y,d])=>`<div class="timeline-item"><b>${y}</b> — ${d}</div>`).join('');
+team.innerHTML=WAKWA_TEAM.map(t=>`<div class="card" style="padding:16px"><b>${t.n}</b><br><small>${t.r}</small></div>`).join('');
+function fit(){mvv.style.gridTemplateColumns=innerWidth<800?'1fr':'1fr 1fr 1fr';vals.style.gridTemplateColumns=innerWidth<700?'1fr 1fr':'repeat(5,1fr)';team.style.gridTemplateColumns=innerWidth<800?'1fr 1fr':'repeat(4,1fr)'}addEventListener('resize',fit);fit();</script></body></html>

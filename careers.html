@@ -1,0 +1,15 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Careers & Partners | WAKWA</title><meta name="description" content="Drive with WAKWA or plug in your truck as an owner-operator. Roles, benefits, onboarding.">
+<link rel="icon" href="assets/img/favicon.svg"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="assets/css/styles.css"></head><body>
+<a class="skip" href="#main">Skip to content</a><main id="main"><div class="container section">
+<p class="eyebrow">Work with us</p><h1 style="font-size:clamp(36px,5vw,64px)">DRIVE. OPERATE. EARN.</h1>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px" id="cols">
+<div class="card" style="padding:22px"><h2>Open roles</h2><ul><li><b>Truck Driver</b> — Class BCE+, 3yrs, clean record</li><li><b>Heavy Machine Operator</b> — excavator/loader/grader</li><li><b>Dispatcher</b> — night-shift ready</li><li><b>Fleet Mechanic</b> — diagnostics + field repair</li><li><b>Logistics Coordinator</b> — PODs, clients, planning</li><li><b>Sales Executive</b> — contractors & sites</li></ul><p><b>Benefits:</b> on-time pay, PPE, training, medical (perm), per-diem on up-country.</p>
+<h2>Driver application</h2><form id="cf" style="display:grid;gap:8px"><input class="field" required placeholder="Full name"><input class="field" required placeholder="Phone"><select class="field"><option>Licence: B</option><option>Licence: C</option><option>Licence: CE</option><option>Licence: BCE + Hazmat</option></select><input class="field" type="number" placeholder="Years experience"><input class="field" type="file" aria-label="Upload licence/CV"><button class="btn btn-amber">Apply</button></form></div>
+<div class="card" style="padding:22px"><h2>Owner-Operators / Partners</h2><ol><li>Apply with logbook + insurance</li><li>Inspection + GPS fitment</li><li>Trial runs (2 weeks)</li><li>Weekly settlement, fuel support</li></ol><p>Requirements: roadworthy truck, comprehensive insurance, sober professional driver, smartphone.</p>
+<form id="pf" style="display:grid;gap:8px"><input class="field" required placeholder="Owner name"><input class="field" required placeholder="Phone"><input class="field" placeholder="Truck: e.g. 10T tipper, KXX 000X"><button class="btn btn-dark">Join fleet network</button></form></div>
+</div></div></main>
+<script src="content/site.js"></script><script src="assets/js/site.js"></script>
+<script>WAKWA_MOUNT('careers.html');cf.onsubmit=e=>{e.preventDefault();wakwaToast('Application received. HR replies in 3 days.');cf.reset();};pf.onsubmit=e=>{e.preventDefault();wakwaToast('Partner request logged. Fleet team will call.');pf.reset();};
+function fit(){cols.style.gridTemplateColumns=innerWidth<900?'1fr':'1fr 1fr'}addEventListener('resize',fit);fit();</script></body></html>
