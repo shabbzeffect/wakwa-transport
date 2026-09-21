@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://wakwa-transport.vercel.app/sitemap.xml

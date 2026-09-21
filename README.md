@@ -1,6 +1,6 @@
 # WAKWA SUPPLY & TRANSPORTATION — Website
 
-**Stack chosen: vanilla HTML5 + Tailwind (CDN) + vanilla JS + Leaflet.** Zero-build, opens instantly, deploys to Vercel as static. Mirrors the Next.js architecture (`content/*.js` = CMS-ready data, `lib/pricing.js` = editable model, `lib/mailer.js` = provider swap). State: fallback path per brief.
+**Stack: static site (`public/`) + serverless functions (`api/`) on Vercel.** Zero-build, deploys instantly. `public/` is the web root (Vercel serves `public/` when `api/` functions exist); `content/*.js` = CMS-ready data, `lib/pricing.js` = editable model, `lib/mailer.js` = provider swap. Preview locally by opening `public/index.html` or `npx serve public`.
 
 ## Run
 - Preview: open `index.html` or `npx serve .`
@@ -42,12 +42,11 @@
 - **Chat:** `assets/js/chat.js` — Tawk.to (`tawkSrc`) or Crisp (`crispId`), loads only after consent. Default `none`.
 - **Analytics:** `assets/js/analytics.js` — GA4 + Meta Pixel + GTM from `window.WAKWA_ANALYTICS` (map to `GA_ID`/`META_PIXEL_ID`/`GTM_ID`), initialised by `site.js` only on consent=yes. `WakwaAnalytics.track()` used by quote/track/driver/billing events. No tags fire on Decline.
 
-## Structure
+## Structure (`public/` is the web root — required by Vercel when `api/` functions exist)
 ```
-index.html about.html services.html service-detail.html fleet.html supply.html coverage.html city.html quote.html thank-you.html track.html driver.html projects.html blog.html blog-post.html careers.html partners.html portal.html billing.html admin-quotes.html contact.html faq.html privacy.html terms.html cookies.html search.html 404.html
-assets/css/styles.css assets/js/site.js assets/js/analytics.js assets/js/chat.js assets/img/favicon.svg
-content/site.js content/services.js content/data.js lib/pricing.js lib/mailer.js lib/cms.js lib/telematics.js lib/auth.js lib/invoices.js lib/payments.js
+public/index.html public/*.html (all pages) public/robots.txt public/sitemap.xml
+public/assets/ public/content/ public/lib/ public/locales/ public/tools/ public/images/
 api/quote.js api/track.js api/mpesa/stk.js api/stripe/checkout.js
-tools/load-calculator.html locales/en.json locales/sw.json
-vercel.json robots.txt sitemap.xml
+vercel.json README.md CONTENT-CHECKLIST.md .env.example
 ```
+Preview locally: open `public/index.html` or run `npx serve public`.
