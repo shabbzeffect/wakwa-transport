@@ -14,7 +14,7 @@
 <main id="main">
 <!-- HERO -->
 <section class="hero grain">
-<img class="kenburns" src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=1800&q=70&auto=format&fit=crop" alt="Loaded tipper trucks on highway at dawn" width="1800" height="900" fetchpriority="high" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+<img class="kenburns" src="assets/img/hero-tippers.jpg" alt="Loaded tipper trucks on highway at dawn" width="1800" height="1193" fetchpriority="high" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
 <div class="hero-scrim" style="position:absolute;inset:0"></div>
 <div class="container" style="position:relative;padding:90px 20px 130px;max-width:1280px">
 <p class="eyebrow reveal" style="color:var(--wakwa-amber)">Haulage · Supply · Heavy Equipment</p>
@@ -115,7 +115,7 @@ document.getElementById('fleetRow').innerHTML=WAKWA_FLEET.slice(0,6).map(f=>`<di
 // location check
 document.getElementById('locCheck').onsubmit=e=>{e.preventDefault();const v=locInput.value.trim();locOut.textContent=v?`✔ Good news — we deliver to ${v} (24–72h typical). Get an exact price →`:'Type a town first.';};
 // case
-const c=WAKWA_PROJECTS[1];document.getElementById('caseSpot').innerHTML=`<img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=1000&q=70&auto=format&fit=crop" alt="${c.img}" style="width:100%;height:100%;object-fit:cover;min-height:280px"><div style="padding:30px"><p class="eyebrow">Case spotlight</p><h3 style="font-size:32px">${c.title}</h3><div style="display:flex;gap:16px;margin:12px 0" class="tabular"><span><b>${c.tonnes}</b><br><small>MOVED</small></span><span><b>${c.dist}</b><br><small>HAUL</small></span><span><b>${c.days}</b><br><small>DURATION</small></span></div><p>“${c.quote}”</p><a class="btn btn-dark" href="projects.html">Read case studies</a></div>`;
+const c=WAKWA_PROJECTS[1];document.getElementById('caseSpot').innerHTML=`<img src="assets/img/case-housing.jpg" alt="${c.img}" width="1000" height="667" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;min-height:280px"><div style="padding:30px"><p class="eyebrow">Case spotlight</p><h3 style="font-size:32px">${c.title}</h3><div style="display:flex;gap:16px;margin:12px 0" class="tabular"><span><b>${c.tonnes}</b><br><small>MOVED</small></span><span><b>${c.dist}</b><br><small>HAUL</small></span><span><b>${c.days}</b><br><small>DURATION</small></span></div><p>“${c.quote}”</p><a class="btn btn-dark" href="projects.html">Read case studies</a></div>`;
 // testimonials
 document.getElementById('testiRow').innerHTML=WAKWA_TESTIMONIALS.slice(0,3).map(t=>`<figure class="card" style="padding:20px;margin:0"><div>${'★'.repeat(t.s)}</div><blockquote>“${t.t}”</blockquote><figcaption><b>${t.n}</b><br><small>${t.r}, ${t.c}</small></figcaption></figure>`).join('');
 // badges
