@@ -406,6 +406,19 @@ a{overflow-wrap:anywhere}
   .news-band form{max-width:none}
 }
 
+/* ---------- 7e · PHOTO BANDS + SPLIT MEDIA (home rhythm) ---------- */
+.photo-band{position:relative;isolation:isolate;color:#fff;overflow:hidden}
+.photo-band::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--band) center/cover;opacity:.38}
+.photo-band::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(5,8,12,.84),rgba(5,8,12,.6) 50%,rgba(5,8,12,.86))}
+.photo-band h2{color:#fff}
+.photo-band .eyebrow{color:var(--wakwa-amber)}
+.photo-band a.more{color:var(--wakwa-amber);font-weight:800}
+.split-media{display:grid;grid-template-columns:.9fr 1.1fr;gap:26px;align-items:stretch;margin-top:22px}
+.split-media figure{margin:0;position:relative;overflow:hidden;border-radius:var(--radius-lg);min-height:340px;box-shadow:var(--card-shadow)}
+.split-media figure img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.split-media figcaption{position:absolute;left:0;right:0;bottom:0;padding:14px 18px;color:#fff;font-weight:700;background:linear-gradient(transparent,rgba(5,8,12,.82))}
+@media(max-width:900px){.split-media{grid-template-columns:1fr}.split-media figure{min-height:240px}}
+
 /* ---------- 8 · PRINT ---------- */@media print{
   .site-header,.topbar,.fab-wa,.mobile-bar,.ticker,.no-print{display:none!important}
   .card{box-shadow:none;break-inside:avoid}

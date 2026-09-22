@@ -47,17 +47,17 @@
 <!-- TICKER -->
 <div class="ticker" style="background:var(--wakwa-black);color:var(--wakwa-amber);font-family:var(--font-head);font-size:22px" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
 <!-- SERVICES -->
-<section class="section route-bg"><div class="container">
+<section class="section photo-band" style="--band:url('assets/img/about-site.jpg')"><div class="container">
 <p class="eyebrow reveal">What we haul</p><h2 class="reveal" style="font-size:clamp(30px,4vw,52px)">RIGHT TRUCK. EVERY LOAD.</h2>
 <div id="svcGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:22px"></div>
-<p style="margin-top:16px"><a href="services.html" style="font-weight:800;color:var(--wakwa-amber-deep)">View all 14 services →</a></p></div></section>
+<p style="margin-top:16px"><a class="more" href="services.html">View all 14 services →</a></p></div></section>
 <!-- WHY -->
 <section class="section" style="background:var(--wakwa-fog)"><div class="container">
 <p class="eyebrow reveal">Why WAKWA</p><h2 class="reveal" style="font-size:clamp(30px,4vw,52px)">BUILT FOR SITE REALITY.</h2>
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px" id="whyGrid"></div></div></section>
+<div class="split-media reveal"><figure class="duotone-wrap"><img src="assets/img/about-depot.jpg" alt="Depot yard with tipper trucks ready at dawn (demo photo)" width="1200" height="800" loading="lazy" decoding="async"><figcaption>Dawn dispatch — loaded before your crew clocks in.</figcaption></figure><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px" id="whyGrid"></div></div></div></section>
 <!-- SUPPLY TEASER -->
-<section class="section"><div class="container">
-<div style="display:flex;justify-content:space-between;align-items:end;gap:14px"><div><p class="eyebrow reveal">Supply catalogue</p><h2 class="reveal" style="font-size:clamp(30px,4vw,52px)">ORDER MATERIALS + DELIVERY.</h2></div><a class="btn btn-outline no-print" href="supply.html">Full catalogue</a></div>
+<section class="section photo-band" style="--band:url('assets/img/fleet-warehouse.jpg')"><div class="container">
+<div style="display:flex;justify-content:space-between;align-items:end;gap:14px"><div><p class="eyebrow reveal">Supply catalogue</p><h2 class="reveal" style="font-size:clamp(30px,4vw,52px)">ORDER MATERIALS + DELIVERY.</h2></div><a class="btn btn-outline no-print" style="color:#fff;border-color:rgba(255,255,255,.55)" href="supply.html">Full catalogue</a></div>
 <div id="matRow" style="display:grid;grid-auto-flow:column;grid-auto-columns:minmax(230px,1fr);gap:14px;overflow-x:auto;padding:18px 2px"></div></div></section>
 <!-- HOW IT WORKS -->
 <section class="section" style="background:var(--wakwa-black);color:#fff"><div class="container">
@@ -124,7 +124,7 @@ document.getElementById('badges').innerHTML=['NTSA / Road Authority Licence (pla
 document.getElementById('blogRow').innerHTML=WAKWA_POSTS.slice(0,3).map(p=>`<a class="card card-hover" href="blog-post.html?slug=${p.slug}" style="padding:20px;text-decoration:none;color:inherit"><small>${p.date} · ${p.read}</small><h3>${p.title}</h3><p style="color:var(--muted)">${p.ex}</p></a>`).join('');
 document.getElementById('waCta').href=S.whatsappLink;
 // responsive grids
-function fit(){const w=innerWidth;svcGrid.style.gridTemplateColumns=w<560?'1fr':w<1000?'1fr 1fr':'repeat(4,1fr)';whyGrid.style.gridTemplateColumns=w<800?'1fr':w<1100?'1fr 1fr':'repeat(3,1fr)';steps.style.gridTemplateColumns=w<800?'1fr':w<1100?'1fr 1fr':'repeat(4,1fr)';testiRow.style.gridTemplateColumns=w<900?'1fr':'repeat(3,1fr)';blogRow.style.gridTemplateColumns=w<900?'1fr':'repeat(3,1fr)';statsGrid.style.gridTemplateColumns=w<700?'1fr 1fr':'repeat(6,1fr)';covGrid.style.gridTemplateColumns=w<900?'1fr':'1fr 1fr';caseSpot.style.gridTemplateColumns=w<900?'1fr':'1.1fr 1fr';quickQuote.style.gridTemplateColumns=w<900?'1fr':'repeat(5,1fr)';}addEventListener('resize',fit);fit();
+function fit(){const w=innerWidth;svcGrid.style.gridTemplateColumns=w<560?'1fr':w<1000?'1fr 1fr':'repeat(4,1fr)';whyGrid.style.gridTemplateColumns=w<700?'1fr':'1fr 1fr';steps.style.gridTemplateColumns=w<800?'1fr':w<1100?'1fr 1fr':'repeat(4,1fr)';testiRow.style.gridTemplateColumns=w<900?'1fr':'repeat(3,1fr)';blogRow.style.gridTemplateColumns=w<900?'1fr':'repeat(3,1fr)';statsGrid.style.gridTemplateColumns=w<700?'1fr 1fr':'repeat(6,1fr)';covGrid.style.gridTemplateColumns=w<900?'1fr':'1fr 1fr';caseSpot.style.gridTemplateColumns=w<900?'1fr':'1.1fr 1fr';quickQuote.style.gridTemplateColumns=w<900?'1fr':'repeat(5,1fr)';}addEventListener('resize',fit);fit();
 </script>
 <style>@media(max-width:560px){.ticker-track{font-size:16px}}</style>
 </body></html>
