@@ -1,0 +1,34 @@
+# Follows the production alias to each new main deployment.
+# Setup (once): GitHub repo → Settings → Secrets → Actions → add VERCEL_TOKEN
+# (same token used for CLI deploys). No other secrets needed.
+name: follow-production-alias
+on:
+  push:
+    branches: [main]
+jobs:
+  alias:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Vercel production deployment
+        id: wait
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          URL=""
+          for i in $(seq 1 30); do
+            RESP=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
+              "https://api.vercel.com/v6/deployments?projectId=prj_6tHAOtrkITt2fYGeDVblFvGhul1r&limit=5")
+            URL=$(echo "$RESP" | jq -r --arg sha "${{ github.sha }}" \
+              '.deployments | map(select(.meta.githubCommitSha == $sha and .state == "READY")) | sort_by(.createdAt) | last | .url // empty')
+            if [ -n "$URL" ]; then break; fi
+            sleep 20
+          done
+          if [ -z "$URL" ]; then echo "timed out waiting for deployment"; exit 1; fi
+          echo "deploy_url=https://$URL" >> "$GITHUB_OUTPUT"
+      - name: Move production alias
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          npx --yes vercel@latest alias set "${{ steps.wait.outputs.deploy_url }}" \
+            wakwa-transport.vercel.app --token "$VERCEL_TOKEN" \
+            --scope justshabirs-projects --yes
