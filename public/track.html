@@ -38,8 +38,16 @@ function render(ref, p){
     '<div class="timeline" style="margin-top:14px">' + stages.map(function(s,i){
       return '<div class="timeline-item" style="opacity:' + (i<=idx?1:.4) + '"><b>' + s + '</b><br><small>' + (i<=idx?'✔ reached':'Pending') + '</small></div>';
     }).join('') + '</div>' +
-    '<p style="font-size:13px;color:var(--muted)">Auto-refresh every 15s. Same-browser driver pings appear instantly. <a href="driver.html">Driver app →</a></p></div>';
+    '<p style="font-size:13px;color:var(--muted)">Auto-refresh every 15s. Same-browser driver pings appear instantly. <a href="driver.html">Driver app →</a></p><button class="btn btn-outline btn-sm" id="shareBtn" type="button">↗ Share tracking link</button></div>';
   try{ ensureMap(p.lat, p.lng); }catch(e){ document.getElementById('liveMap').innerHTML = '<p>Map offline — position: ' + p.lat.toFixed(3) + ', ' + p.lng.toFixed(3) + '</p>'; }
+  var sb=document.getElementById('shareBtn');
+  if(sb) sb.onclick=function(){
+    var url=location.origin+location.pathname+'?ref='+encodeURIComponent(ref);
+    function done(msg){ wakwaToast(msg); if(window.WakwaAnalytics)WakwaAnalytics.track('track_share',{}); }
+    if(navigator.share){ navigator.share({title:'WAKWA tracking '+ref,text:'Live position for '+ref,url:url}).then(function(){done('Tracking link shared.');}).catch(function(){}); }
+    else if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(url).then(function(){done('Tracking link copied.');}); }
+    else { window.prompt('Copy tracking link:',url); }
+  };
 }
 function lookup(ref){
   ref = String(ref || '').trim().toUpperCase() || 'WKW-DEMO';

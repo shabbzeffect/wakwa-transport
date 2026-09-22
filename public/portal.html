@@ -51,7 +51,8 @@ function drawShips(){
     var bus = WakwaTelematics.readBus(q.ref);
     return '<div class="card" style="padding:16px"><b class="tabular">' + q.ref + '</b> <span class="badge badge-info">' + (bus && bus.stage ? bus.stage : (q.status || 'Booked')) + '</span><br>' +
       '<small>' + (q.from||'') + ' → ' + (q.to||'') + ' · ' + (q.cargo||'') + ' ' + (q.tonnes||'') + 'T</small><br>' +
-      '<a class="btn btn-outline" style="margin-top:8px;padding:6px 12px" href="track.html?ref=' + encodeURIComponent(q.ref) + '">Live track →</a></div>';
+      '<a class="btn btn-outline" style="margin-top:8px;padding:6px 12px" href="track.html?ref=' + encodeURIComponent(q.ref) + '">Live track →</a>' +
+      ((bus&&bus.podPhoto) ? '<br><a href="' + bus.podPhoto + '" download="POD-' + q.ref + '.jpg" style="display:inline-block;margin-top:10px;font-weight:800">📷 View POD photo</a>' : '') + '</div>';
   }).join('');
 }
 function drawInvs(){

@@ -54,12 +54,34 @@ autoBtn.onclick = function(){
   }); };
   tick(); auto = setInterval(tick, 30000);
 };
-podBtn.onclick = function(){ stage.value = 'Delivered'; note.value = note.value || 'Delivered, POD signed.'; pingF.requestSubmit(); };
+var pendingPod = null; // POD photo (dataURL) attached to the next ping, then cleared
+podBtn.onclick = function(){
+  if(!ref.value.trim()){ wakwaToast('Enter a waybill first.'); return; }
+  var cam=document.createElement('input'); cam.type='file'; cam.accept='image/*';
+  try{ cam.setAttribute('capture','environment'); }catch(e){} // rear camera on phones
+  cam.onchange=function(){
+    var f=cam.files&&cam.files[0];
+    if(!f){ wakwaToast('No photo chosen — tap POD again to retry.'); return; }
+    var url=URL.createObjectURL(f), img=new Image();
+    img.onload=function(){
+      var sc=Math.min(1,800/Math.max(img.width,img.height));
+      var c=document.createElement('canvas'); c.width=Math.round(img.width*sc); c.height=Math.round(img.height*sc);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      URL.revokeObjectURL(url); pendingPod=c.toDataURL('image/jpeg',.72);
+      stage.value='Delivered'; if(!note.value)note.value='Delivered, POD signed + photo.';
+      pingF.requestSubmit();
+    };
+    img.onerror=function(){ wakwaToast('Could not read that photo — try again.'); };
+    img.src=url;
+  };
+  cam.click(); wakwaToast('Snap the signed delivery note…');
+};
 function sendPing(la, ln, silent){
   var v = ref.value.trim(); if(!v){ if(!silent) wakwaToast('Enter a waybill first.'); return; }
   WakwaTelematics.pushPing(v, { lat: parseFloat(la || lat.value), lng: parseFloat(ln || lng.value),
     speedKph: 0, stage: stage.value, driver: sessionStorage.getItem('wakwa-driver') || '',
-    truck: truck.value, note: note.value });
+    truck: truck.value, note: note.value, podPhoto: pendingPod || undefined });
+  pendingPod = null;
   trackLink.href = 'track.html?ref=' + encodeURIComponent(v);
   pingOut.textContent = '✔ Ping sent for ' + v.toUpperCase() + ' · ' + stage.value + ' · ' + new Date().toLocaleTimeString();
   if(window.WakwaAnalytics) WakwaAnalytics.track('driver_ping', { stage: stage.value });
