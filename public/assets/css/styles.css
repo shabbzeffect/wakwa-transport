@@ -297,6 +297,10 @@ html.js .reveal.in{opacity:1;transform:none}
   html.js .reveal{opacity:1;transform:none;transition:none}
   .kenburns,.ticker-track,.fab-wa,.skeleton{animation:none!important}
   .card-hover:hover,.btn:active{transform:none}
+  .btn-amber::after{display:none}
+  .zoom:hover img{transform:none}
+  #routePath{transition:none}
+  html.js .reveal{transition-delay:0ms}
   *,*::before,*::after{transition-duration:.01ms!important}
 }
 
@@ -418,6 +422,28 @@ a{overflow-wrap:anywhere}
 .split-media figure img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .split-media figcaption{position:absolute;left:0;right:0;bottom:0;padding:14px 18px;color:#fff;font-weight:700;background:linear-gradient(transparent,rgba(5,8,12,.82))}
 @media(max-width:900px){.split-media{grid-template-columns:1fr}.split-media figure{min-height:240px}}
+
+/* ---------- 7f · MOTION SYSTEM (tasteful, reduced-motion safe) ---------- */
+html.js .reveal{transition-delay:var(--d,0ms)}
+.btn{position:relative;overflow:hidden}
+.btn-amber::after{content:"";position:absolute;top:0;bottom:0;left:-70px;width:44px;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);
+  transform:skewX(-20deg);transition:left .55s var(--ease)}
+.btn-amber:hover::after{left:calc(100% + 70px)}
+.zoom{overflow:hidden}
+.zoom img{transition:transform .7s var(--ease)}
+.zoom:hover img{transform:scale(1.06)}
+#routePath{transition:stroke-dashoffset 2.2s var(--ease)}
+/* premium home blocks */
+.stat-band{background:var(--wakwa-black);color:#fff}
+.stat-band [data-count]{color:var(--wakwa-amber)}
+.stat-band small{color:#B9C2CD;letter-spacing:.14em;font-size:.72rem;font-weight:700}
+.t-avatar{width:46px;height:46px;border-radius:50%;flex:none;display:inline-flex;align-items:center;justify-content:center;
+  font-weight:800;color:#141414;background:linear-gradient(120deg,var(--wakwa-amber),var(--wakwa-amber-deep))}
+.t-stars{color:var(--wakwa-amber-deep);letter-spacing:.15em}
+[data-theme="dark"] .t-stars{color:var(--wakwa-amber)}
+.t-quote{font-size:2.6rem;line-height:1;color:var(--wakwa-amber-deep);font-family:Georgia,serif}
+.shield-card{flex:1 1 200px;display:flex;gap:12px;align-items:center}
 
 /* ---------- 8 · PRINT ---------- */@media print{
   .site-header,.topbar,.fab-wa,.mobile-bar,.ticker,.no-print{display:none!important}

@@ -17,14 +17,14 @@
 <img class="kenburns" src="assets/img/hero-tippers.jpg" alt="Loaded tipper trucks on highway at dawn" width="1800" height="1193" fetchpriority="high" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
 <div class="hero-scrim" style="position:absolute;inset:0"></div>
 <div class="container" style="position:relative;padding:90px 20px 130px;max-width:1280px">
-<p class="eyebrow reveal" style="color:var(--wakwa-amber)">Haulage · Supply · Heavy Equipment</p>
-<h1 class="hero-title reveal">TRANSPORTATION TO<br>ALL DESTINATIONS.</h1>
-<p class="hero-sub reveal">Construction materials, bulk cargo and heavy equipment — <b>supplied, loaded and delivered anywhere, on time.</b></p>
-<div class="cluster reveal" style="margin-top:18px">
+<p class="eyebrow reveal" style="color:var(--wakwa-amber);--d:.05s">Haulage · Supply · Heavy Equipment</p>
+<h1 class="hero-title reveal" style="--d:.14s">TRANSPORTATION TO<br>ALL DESTINATIONS.</h1>
+<p class="hero-sub reveal" style="--d:.24s">Construction materials, bulk cargo and heavy equipment — <b>supplied, loaded and delivered anywhere, on time.</b></p>
+<div class="cluster reveal" style="margin-top:18px;--d:.34s">
 <a class="btn btn-amber btn-lg" href="quote.html" data-i18n="quote">Get a Free Quote</a>
 <a class="btn btn-lg" id="callDispatch" href="tel:+254701936990" style="background:#fff;color:#111">📞 Call Dispatch Now</a>
 </div>
-<p class="reveal tabular" style="margin-top:16px;font-size:13px;letter-spacing:.08em">LICENSED & INSURED · GPS-TRACKED FLEET · 24/7 OPERATIONS · NATIONWIDE COVERAGE</p>
+<p class="reveal tabular" style="margin-top:16px;font-size:13px;letter-spacing:.08em;--d:.44s">LICENSED & INSURED · GPS-TRACKED FLEET · 24/7 OPERATIONS · NATIONWIDE COVERAGE</p>
 </div></section>
 <!-- QUICK QUOTE -->
 <div class="container" style="margin-top:-70px;position:relative;z-index:5">
@@ -36,7 +36,7 @@
 <button class="btn btn-amber">Get Price →</button>
 </form></div>
 <!-- STATS -->
-<section class="section"><div class="container"><div class="card reveal" style="display:grid;grid-template-columns:repeat(6,1fr);padding:26px;gap:18px;text-align:center" id="statsGrid">
+<section class="section stat-band"><div class="container"><div class="reveal" style="display:grid;grid-template-columns:repeat(6,1fr);padding:26px 6px;gap:18px;text-align:center" id="statsGrid">
 <div><div style="font-family:var(--font-head);font-size:38px;font-weight:800" data-count="48" data-suffix="+">0</div><small>TRUCKS IN FLEET</small></div>
 <div><div style="font-family:var(--font-head);font-size:38px;font-weight:800" data-count="210000" data-suffix="+">0</div><small>TONNES DELIVERED</small></div>
 <div><div style="font-family:var(--font-head);font-size:38px;font-weight:800" data-count="40" data-suffix="+">0</div><small>REGIONS COVERED</small></div>
@@ -111,18 +111,21 @@ document.getElementById('matRow').innerHTML=WAKWA_MATERIALS.slice(0,8).map(m=>`<
 // steps
 document.getElementById('steps').innerHTML=['Request a Quote|Tell us route + cargo. 2 minutes.','We Confirm Truck & Price|Fixed price in ~30 min.','Load & Dispatch|Live tracking link sent.','Delivered & Signed Off|POD + invoice. Done.'].map((s,i)=>{const[t,d]=s.split('|');return `<li class="card reveal in" style="padding:18px;background:var(--wakwa-steel);border-color:#33404f;color:#fff"><div class="step-dot" style="background:var(--wakwa-amber);color:#111;margin-bottom:10px">${i+1}</div><b>${t}</b><br><small style="color:#b9c2cd">${d}</small></li>`}).join('');
 // fleet
-document.getElementById('fleetRow').innerHTML=WAKWA_FLEET.slice(0,6).map(f=>`<div class="card card-hover" style="padding:18px"><span class="badge badge-ok">${f.avail}</span><h3 style="margin-top:8px">${f.name}</h3><p class="tabular"><b>${f.cap}</b> · ${f.axle}</p><p style="color:var(--muted);font-size:14px">${f.use}</p><a href="fleet.html" style="font-weight:800">Specs →</a></div>`).join('');
+const fp=id=>id.includes('tipper')||id==='tanker'||id==='flatbed'?'assets/img/fleet-highway.jpg':(id==='lowbed'||id==='plant'?'assets/img/fleet-plant.jpg':'assets/img/fleet-warehouse.jpg');
+document.getElementById('fleetRow').innerHTML=WAKWA_FLEET.slice(0,6).map(f=>`<div class="card card-hover zoom" style="padding:18px"><img src="${fp(f.id)}" alt="${f.name} (demo photo)" width="1000" height="667" loading="lazy" decoding="async" style="margin:-18px -18px 12px;width:calc(100% + 36px);height:150px;object-fit:cover;border-radius:11px 11px 0 0"><span class="badge badge-ok">${f.avail}</span><h3 style="margin-top:8px">${f.name}</h3><p class="tabular"><b>${f.cap}</b> · ${f.axle}</p><p style="color:var(--muted);font-size:14px">${f.use}</p><a href="fleet.html" style="font-weight:800">Specs →</a></div>`).join('');
 // location check
 document.getElementById('locCheck').onsubmit=e=>{e.preventDefault();const v=locInput.value.trim();locOut.textContent=v?`✔ Good news — we deliver to ${v} (24–72h typical). Get an exact price →`:'Type a town first.';};
 // case
 const c=WAKWA_PROJECTS[1];document.getElementById('caseSpot').innerHTML=`<img src="assets/img/case-housing.jpg" alt="${c.img}" width="1000" height="667" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;min-height:280px"><div style="padding:30px"><p class="eyebrow">Case spotlight</p><h3 style="font-size:32px">${c.title}</h3><div style="display:flex;gap:16px;margin:12px 0" class="tabular"><span><b>${c.tonnes}</b><br><small>MOVED</small></span><span><b>${c.dist}</b><br><small>HAUL</small></span><span><b>${c.days}</b><br><small>DURATION</small></span></div><p>“${c.quote}”</p><a class="btn btn-dark" href="projects.html">Read case studies</a></div>`;
 // testimonials
-document.getElementById('testiRow').innerHTML=WAKWA_TESTIMONIALS.slice(0,3).map(t=>`<figure class="card" style="padding:20px;margin:0"><div>${'★'.repeat(t.s)}</div><blockquote>“${t.t}”</blockquote><figcaption><b>${t.n}</b><br><small>${t.r}, ${t.c}</small></figcaption></figure>`).join('');
+document.getElementById('testiRow').innerHTML=WAKWA_TESTIMONIALS.slice(0,3).map(t=>{const ini=t.n.split(' ').map(w=>w[0]).slice(0,2).join('');return `<figure class="card card-hover" style="padding:22px;margin:0"><div class="t-quote" aria-hidden="true">“</div><div class="t-stars" aria-label="${t.s} out of 5 stars">${'★'.repeat(t.s)}</div><blockquote style="margin:10px 0 14px;font-size:1.02rem">“${t.t}”</blockquote><figcaption style="display:flex;gap:12px;align-items:center"><span class="t-avatar" aria-hidden="true">${ini}</span><span><b>${t.n}</b><br><small style="color:var(--muted)">${t.r}, ${t.c}</small></span></figcaption></figure>`;}).join('');
 // badges
-document.getElementById('badges').innerHTML=['NTSA / Road Authority Licence (placeholder)','Goods-in-Transit Insurance (placeholder)','ISO 9001-style Quality Badge (placeholder)','KEBS / Axle-Load Compliant','Driver Safety Program'].map(b=>`<span class="badge badge-info">${b}</span>`).join('');
+document.getElementById('badges').innerHTML=['NTSA / Road Authority Licence','Goods-in-Transit Insurance','ISO-Style Quality System','KEBS / Axle-Load Compliant','Driver Safety Program'].map(b=>`<div class="card shield-card" style="padding:14px 16px"><span style="font-size:24px" aria-hidden="true">🛡️</span><b style="font-size:.85rem;line-height:1.35">${b}</b></div>`).join('');
 // blog
-document.getElementById('blogRow').innerHTML=WAKWA_POSTS.slice(0,3).map(p=>`<a class="card card-hover" href="blog-post.html?slug=${p.slug}" style="padding:20px;text-decoration:none;color:inherit"><small>${p.date} · ${p.read}</small><h3>${p.title}</h3><p style="color:var(--muted)">${p.ex}</p></a>`).join('');
+document.getElementById('blogRow').innerHTML=WAKWA_POSTS.slice(0,3).map(p=>`<a class="card card-hover zoom" href="blog-post.html?slug=${p.slug}" style="padding:20px;text-decoration:none;color:inherit;display:block">${p.pic?`<img src="${p.pic}" alt="" aria-hidden="true" width="1000" height="667" loading="lazy" decoding="async" style="margin:-20px -20px 14px;width:calc(100% + 40px);height:160px;object-fit:cover;border-radius:13px 13px 0 0">`:''}<small>${p.date} · ${p.read}</small><h3>${p.title}</h3><p style="color:var(--muted)">${p.ex}</p></a>`).join('');
 document.getElementById('waCta').href=S.whatsappLink;
+// corridor route draws itself when scrolled into view (static final state for reduced motion)
+(function(){var p=document.getElementById('routePath');if(!p)return;if(!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion: reduce)').matches)return;p.setAttribute('pathLength','1');p.style.strokeDasharray='1';p.style.strokeDashoffset='1';var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){p.style.strokeDashoffset='0';io.disconnect();}});});io.observe(p);})();
 // responsive grids
 function fit(){const w=innerWidth;svcGrid.style.gridTemplateColumns=w<560?'1fr':w<1000?'1fr 1fr':'repeat(4,1fr)';whyGrid.style.gridTemplateColumns=w<700?'1fr':'1fr 1fr';steps.style.gridTemplateColumns=w<800?'1fr':w<1100?'1fr 1fr':'repeat(4,1fr)';testiRow.style.gridTemplateColumns=w<900?'1fr':'repeat(3,1fr)';blogRow.style.gridTemplateColumns=w<900?'1fr':'repeat(3,1fr)';statsGrid.style.gridTemplateColumns=w<700?'1fr 1fr':'repeat(6,1fr)';covGrid.style.gridTemplateColumns=w<900?'1fr':'1fr 1fr';caseSpot.style.gridTemplateColumns=w<900?'1fr':'1.1fr 1fr';quickQuote.style.gridTemplateColumns=w<900?'1fr':'repeat(5,1fr)';}addEventListener('resize',fit);fit();
 </script>
