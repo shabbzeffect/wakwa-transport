@@ -51,6 +51,14 @@ function footerHTML(){ const svc=(window.WAKWA_SERVICES||[]).slice(0,6).map(s=>`
 <div id="emg" hidden style="background:var(--danger);color:#fff;text-align:center;padding:10px;font-weight:800"></div>`; }
 function mount(page){
  document.documentElement.classList.add('js'); // gates .reveal hidden-state: no-JS still shows content
+ // browser UI essentials on every page (crawlers need static tags — see index/quote/fleet heads)
+ if(!document.querySelector('meta[name="theme-color"]')){
+   const tc=document.createElement('meta'); tc.name='theme-color'; tc.content='#0B0F14'; document.head.appendChild(tc);
+ }
+ if(!document.querySelector('link[rel="apple-touch-icon"]')){
+   const at=document.createElement('link'); at.rel='apple-touch-icon';
+   at.href=(assetBase()||'')+'assets/img/apple-touch-icon.png'; document.head.appendChild(at);
+ }
  document.body.insertAdjacentHTML('afterbegin', headerHTML(page));
  document.body.insertAdjacentHTML('beforeend', footerHTML());
  // theme — stored choice wins, else OS preference
