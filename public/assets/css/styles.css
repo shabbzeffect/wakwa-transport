@@ -317,6 +317,7 @@ html.js .reveal.in{opacity:1;transform:none}
   .toast{max-width:none}
 }
 @media(max-width:560px){
+  .logo-sub{display:none} /* keep header compact: WAKWA mark only */
   .container{padding-inline:16px}
   .grid-4{grid-template-columns:1fr}
   .btn{width:100%}
