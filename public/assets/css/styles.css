@@ -341,7 +341,7 @@ html.js .reveal.in{opacity:1;transform:none}
 .crumbs [aria-hidden="true"]{opacity:.6}
 
 /* fleet card header band + material swatches */
-.fleet-band{margin:-20px -20px 14px;padding:16px 20px 14px;border-radius:13px 13px 0 0;color:#fff;
+.fleet-band{margin:0 -20px 14px;padding:16px 20px 14px;color:#fff;
   background:linear-gradient(120deg,var(--wakwa-black) 30%,var(--wakwa-steel-2) 75%,var(--wakwa-amber-deep));
   border-bottom:3px solid var(--wakwa-amber)}
 .fleet-band h2{color:#fff;margin:6px 0 2px}
