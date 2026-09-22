@@ -327,6 +327,30 @@ html.js .reveal.in{opacity:1;transform:none}
 /* legacy inline-styled CTAs (keep hover affordance consistent) */
 #callDispatch:hover,#waCta:hover{filter:brightness(1.08)}
 
+/* ---------- 7b · PAGE HERO (auto-applied by site.js heroize) ---------- */
+.page-hero{position:relative;overflow:hidden;background:var(--wakwa-black);color:#fff}
+.page-hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.42}
+.page-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(5,8,12,.9) 25%,rgba(5,8,12,.55) 60%,rgba(5,8,12,.3))}
+.page-hero-inner{position:relative;padding:clamp(44px,6vw,76px) 0}
+.page-hero h1{color:#fff;margin:.15em 0 .35em}
+.page-hero .eyebrow{color:var(--wakwa-amber)}
+.page-hero .sub{color:#E8EDF3;font-size:var(--fs-lead);max-width:62ch;margin:0}
+.crumbs{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.8125rem;color:#B9C2CD;margin-bottom:14px}
+.crumbs a{color:#fff;text-decoration:none;font-weight:700}
+.crumbs a:hover{color:var(--wakwa-amber)}
+.crumbs [aria-hidden="true"]{opacity:.6}
+
+/* fleet card header band + material swatches */
+.fleet-band{margin:-20px -20px 14px;padding:16px 20px 14px;border-radius:13px 13px 0 0;color:#fff;
+  background:linear-gradient(120deg,var(--wakwa-black) 30%,var(--wakwa-steel-2) 75%,var(--wakwa-amber-deep));
+  border-bottom:3px solid var(--wakwa-amber)}
+.fleet-band h2{color:#fff;margin:6px 0 2px}
+.fleet-band .cap{font-size:1.35rem;font-weight:800;color:var(--wakwa-amber)}
+.swatch{margin:-20px -20px 14px;height:86px;border-radius:13px 13px 0 0;position:relative;overflow:hidden}
+.swatch::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.28))}
+.swatch span{position:absolute;left:14px;bottom:8px;z-index:1;color:#fff;font-family:var(--font-head);
+  font-weight:800;font-size:1.5rem;letter-spacing:.05em;text-transform:uppercase;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+
 /* ---------- 8 · PRINT ---------- */@media print{
   .site-header,.topbar,.fab-wa,.mobile-bar,.ticker,.no-print{display:none!important}
   .card{box-shadow:none;break-inside:avoid}

@@ -9,5 +9,15 @@
 <div class="card" style="padding:20px;margin-top:16px"><h2>Have a BOQ?</h2><p>Upload it on the quote page — we price the full schedule in 24h.</p><a class="btn btn-amber" href="quote.html">Send BOQ →</a></div></div></main>
 <script src="content/site.js"></script><script src="content/data.js"></script><script src="assets/js/site.js"></script>
 <script>WAKWA_MOUNT('supply.html');
-grid.innerHTML=WAKWA_MATERIALS.map(m=>`<div class="card card-hover" style="padding:20px"><h2>${m.name}</h2><p style="color:var(--muted)">per ${m.unit} · ${m.note}</p><p class="tabular">Typical truckload: <b>${m.truckload}</b></p><a class="btn btn-amber" href="quote.html?item=${encodeURIComponent(m.name)}">Request Price</a></div>`).join('');
+function swatch(n){ n=n.toLowerCase();
+ if(n.includes('sand'))return 'linear-gradient(120deg,#E8B34B,#B45309)';
+ if(n.includes('ballast')||n.includes('hardcore')||n.includes('quarry'))return 'linear-gradient(120deg,#6B7280,#374151)';
+ if(n.includes('murram'))return 'linear-gradient(120deg,#B45309,#7C2D12)';
+ if(n.includes('cement'))return 'linear-gradient(120deg,#CBD5E1,#64748B)';
+ if(n.includes('steel'))return 'linear-gradient(120deg,#64748B,#1E293B)';
+ if(n.includes('timber'))return 'linear-gradient(120deg,#92400E,#451A03)';
+ if(n.includes('block')||n.includes('paver'))return 'linear-gradient(120deg,#9CA3AF,#4B5563)';
+ if(n.includes('roof'))return 'linear-gradient(120deg,#0EA5E9,#0C4A6E)';
+ return 'linear-gradient(120deg,var(--wakwa-amber),var(--wakwa-amber-deep))'; }
+grid.innerHTML=WAKWA_MATERIALS.map(m=>`<div class="card card-hover" style="padding:20px"><div class="swatch" aria-hidden="true" style="background:${swatch(m.name)}"><span>per ${m.unit}</span></div><h2>${m.name}</h2><p style="color:var(--muted)">${m.note}</p><p class="tabular">Typical truckload: <b>${m.truckload}</b></p><a class="btn btn-amber" href="quote.html?item=${encodeURIComponent(m.name)}">Request Price</a></div>`).join('');
 function fit(){grid.style.gridTemplateColumns=innerWidth<800?'1fr':innerWidth<1100?'1fr 1fr':'repeat(3,1fr)'}addEventListener('resize',fit);fit();</script></body></html>

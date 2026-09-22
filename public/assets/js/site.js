@@ -71,6 +71,11 @@ function mount(page){
   $('#consentYes').onclick=()=>{localStorage.setItem('wakwa-consent','yes');$('#consent').hidden=true;initVendorStacks();};
   $('#consentNo').onclick=()=>{localStorage.setItem('wakwa-consent','no');$('#consent').hidden=true;};
   if(localStorage.getItem('wakwa-consent')==='yes') initVendorStacks();
+ // page hero — wraps each page's eyebrow+H1(+intro) in a duotone photo band.
+ // Progressive enhancement: no-JS keeps the original plain headers.
+ heroize(page);
+ // Re-run after parsing: catches JS-rendered templates (service/blog/city/legal).
+ document.addEventListener('DOMContentLoaded',()=>heroize(page));
  // reveal + counters — skip animation entirely under reduced motion / no IO
  const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
  if(!('IntersectionObserver' in window)||reduceMotion){
@@ -113,6 +118,51 @@ function initLang(){
  sel.onchange=()=>{ localStorage.setItem('wakwa-lang',sel.value); apply(sel.value);
    toast(sel.value==='sw'?'Kiswahili kimechaguliwa (demo — nav na CTA zimetafsiriwa).':'English restored.'); };
  if(saved!=='en') apply(saved);
+}
+const HERO_SKIP=['index.html','404.html','thank-you.html'];
+const HERO_IMG={
+ 'services.html':'assets/img/about-site.jpg','service-detail.html':'assets/img/about-site.jpg',
+ 'blog.html':'assets/img/about-site.jpg','blog-post.html':'assets/img/about-site.jpg',
+ 'fleet.html':'assets/img/project-move.jpg','driver.html':'assets/img/project-move.jpg','portal.html':'assets/img/project-move.jpg',
+ 'supply.html':'assets/img/about-depot.jpg','partners.html':'assets/img/about-depot.jpg','careers.html':'assets/img/about-depot.jpg',
+ 'about.html':'assets/img/case-housing.jpg','projects.html':'assets/img/case-housing.jpg',
+ 'coverage.html':'assets/img/project-road.jpg','city.html':'assets/img/project-road.jpg','tools/load-calculator.html':'assets/img/project-road.jpg'
+};
+const HERO_CRUMB={'services.html':'Services','service-detail.html':'Services','fleet.html':'Fleet','supply.html':'Supply','about.html':'About Us','coverage.html':'Coverage','city.html':'Coverage','contact.html':'Contact','quote.html':'Get a Quote','blog.html':'Blog','blog-post.html':'Blog','careers.html':'Careers','partners.html':'Partners','faq.html':'FAQ','track.html':'Track Shipment','billing.html':'Billing','driver.html':'Driver App','portal.html':'Client Portal','admin-quotes.html':'Admin','search.html':'Search','privacy.html':'Legal','terms.html':'Legal','cookies.html':'Legal','projects.html':'Projects','tools/load-calculator.html':'Load Calculator'};
+function assetBase(){
+ try{
+   const el=document.querySelector('script[src*="site.js"]');
+   const src=el?el.getAttribute('src'):'assets/js/site.js';
+   return src.replace(/assets\/js\/site\.js$/,'');
+ }catch(e){ return ''; }
+}
+function heroize(page){
+ if(HERO_SKIP.includes(page)) return;
+ const main=document.querySelector('main'); if(!main) return;
+ const eb=main.querySelector('.eyebrow'); if(!eb) return;
+ if(eb.closest('.page-hero')||eb.closest('.hero')) return;
+ const h1=eb.nextElementSibling;
+ if(!h1||h1.tagName!=='H1') return;
+ const subs=[]; let n=h1.nextElementSibling;
+ while(n&&n.tagName==='P'&&subs.length<2){ subs.push(n); n=n.nextElementSibling; }
+ const sec=document.createElement('section'); sec.className='page-hero';
+ let img=HERO_IMG[page]||'assets/img/hero-tippers.jpg';
+ let crumb=HERO_CRUMB[page]||eb.textContent.trim().split('·')[0].trim()||'Page';
+ try{ // pages that share a mount id (search, tools) get their own label/art
+   const path=location.pathname||'';
+   if(path.includes('search')){ crumb='Search'; }
+   if(path.includes('load-calculator')){ crumb='Load Calculator'; img='assets/img/project-road.jpg'; }
+ }catch(e){}
+ sec.innerHTML='<img src="'+assetBase()+img+'" alt="" aria-hidden="true" loading="lazy" decoding="async">'+
+   '<div class="page-hero-inner"><div class="container"><nav class="crumbs" aria-label="Breadcrumb">'+
+   '<a href="index.html">Home</a><span aria-hidden="true">/</span><span aria-current="page">'+crumb+'</span>'+
+   '</nav></div></div>';
+ const inner=sec.querySelector('.page-hero-inner .container');
+ const host=eb.parentElement;
+ inner.appendChild(eb); inner.appendChild(h1);
+ subs.forEach(s=>{ s.classList.add('sub'); s.removeAttribute('style'); inner.appendChild(s); });
+ host.parentElement.insertBefore(sec,host);
+ if(host.classList.contains('section')) host.style.paddingTop='28px';
 }
 function ensureVendorScripts(){
   if(window.__wakwaVendorLoaded) return window.__wakwaVendorLoaded;
