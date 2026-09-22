@@ -92,16 +92,27 @@ function mount(page){
  heroize(page);
  // Re-run after parsing: catches JS-rendered templates (service/blog/city/legal).
  document.addEventListener('DOMContentLoaded',()=>heroize(page));
- // reveal + counters — skip animation entirely under reduced motion / no IO
+ // reveal engine — static nodes now, JS-injected cards later (MutationObserver).
+ // Stagger comes from each card's --d custom property. No-JS / reduced-motion /
+ // no-IntersectionObserver all resolve to visible final state, never hidden.
  const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
- if(!('IntersectionObserver' in window)||reduceMotion){
-   $$('.reveal').forEach(el=>el.classList.add('in'));
+ const revealIO=('IntersectionObserver' in window&&!reduceMotion)
+   ? new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');revealIO.unobserve(e.target);}}),{threshold:.12})
+   : null;
+ function revealWatch(el){ if(revealIO) revealIO.observe(el); else el.classList.add('in'); }
+ $$('.reveal:not(.in)').forEach(revealWatch);
+ if('MutationObserver' in window){
+   new MutationObserver(muts=>{muts.forEach(m=>{m.addedNodes.forEach(n=>{
+     if(!n||n.nodeType!==1) return;
+     if(n.classList&&n.classList.contains('reveal')&&!n.classList.contains('in')) revealWatch(n);
+     if(n.querySelectorAll) n.querySelectorAll('.reveal:not(.in)').forEach(revealWatch);
+   });});}).observe(document.body,{childList:true,subtree:true});
+ }
+ if(!revealIO){
    $$('[data-count]').forEach(el=>{ el.textContent=Number(el.dataset.count).toLocaleString()+(el.dataset.suffix||''); });
  }else{
- const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12});
- $$('.reveal').forEach(el=>io.observe(el));
- $$('[data-count]').forEach(el=>{ const end=parseFloat(el.dataset.count); const suf=el.dataset.suffix||''; const cio=new IntersectionObserver(es=>{if(es[0].isIntersecting){cio.disconnect();const t0=performance.now();const step=t=>{const p=Math.min(1,(t-t0)/1400);el.textContent=Math.round(end*(1-Math.pow(1-p,3))).toLocaleString()+suf;if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step);}});cio.observe(el); });
-  } // end motion-safe branch
+  $$('[data-count]').forEach(el=>{ const end=parseFloat(el.dataset.count); const suf=el.dataset.suffix||''; const cio=new IntersectionObserver(es=>{if(es[0].isIntersecting){cio.disconnect();const t0=performance.now();const step=t=>{const p=Math.min(1,(t-t0)/1400);el.textContent=Math.round(end*(1-Math.pow(1-p,3))).toLocaleString()+suf;if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step);}});cio.observe(el); });
+ }
  // emergency banner slot: set window.WAKWA_EMERGENCY="..." to enable
  if(window.WAKWA_EMERGENCY){ const e=$('#emg'); e.textContent='⚠️ '+window.WAKWA_EMERGENCY; e.hidden=false; document.body.prepend(e); }
  // footer grid is pure CSS now (see .foot-grid breakpoints)

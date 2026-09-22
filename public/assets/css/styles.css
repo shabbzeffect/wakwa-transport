@@ -402,6 +402,12 @@ a{overflow-wrap:anywhere}
 @media(max-width:560px){
   /* collapse every multi-column form grid to one column (beats inline styles) */
   form [style*="grid-template-columns"]{grid-template-columns:1fr!important}
+  /* wrap flex form rows + tabs so inputs never push the page wide */
+  form[style*="display:flex"],[role="tablist"],#urg{flex-wrap:wrap}
+  form input.field{flex:1 1 150px;min-width:0}
+  /* header quote CTA hides on phones — the sticky bottom bar already offers it */
+  .site-header a.btn-amber{display:none}
+  h1,h2{overflow-wrap:break-word}
   .hero-title{font-size:clamp(2.5rem,13.5vw,4rem)}
   .page-hero-inner{padding:40px 0}
   main #liveMap{height:260px}

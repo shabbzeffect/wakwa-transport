@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Admin Quotes | WAKWA</title><link rel="icon" href="assets/img/favicon.svg"><link rel="stylesheet" href="assets/css/styles.css"><script src="https://cdn.tailwindcss.com"></script></head><body>
 <main><div class="container section"><p class="eyebrow">Admin-lite</p><h1>SUBMITTED QUOTES.</h1><p style="font-size:13px">Protected route stub — reads local JSON store. Add real auth before production.</p>
-<div style="display:flex;gap:8px"><input class="field" id="pin" placeholder="PIN (hint: 1234)" style="max-width:200px"><button class="btn btn-dark" id="go">Unlock</button></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><input class="field" id="pin" placeholder="PIN (hint: 1234)" style="max-width:200px;flex:1;min-width:150px"><button class="btn btn-dark" id="go">Unlock</button></div>
 <div id="out" style="margin-top:12px"></div></div></main>
 <script src="content/site.js"></script><script src="assets/js/site.js"></script>
 <script>WAKWA_MOUNT('admin-quotes.html');go.onclick=()=>{if(pin.value!=='1234'){wakwaToast('Wrong PIN (demo: 1234)');return;}const q=JSON.parse(localStorage.getItem('wakwa-quotes')||'[]');out.innerHTML=q.length?q.map(x=>`<div class="card" style="padding:14px;margin-bottom:8px"><b>${x.ref}</b> <span class="badge badge-warn">${x.status}</span><br>${x.from} → ${x.to} · ${x.cargo} ${x.tonnes}T · ${x.name} ${x.phone}<br>Est: ${x.est.low.toLocaleString()}–${x.est.high.toLocaleString()}</div>`).join(''):'<p>No quotes yet on this device.</p>';};</script></body></html>
