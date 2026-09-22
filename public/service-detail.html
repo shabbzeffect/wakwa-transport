@@ -7,6 +7,8 @@
 <script>WAKWA_MOUNT('services.html');
 const slug=new URLSearchParams(location.search).get('slug')||WAKWA_SERVICES[0].slug;
 const s=WAKWA_SERVICES.find(x=>x.slug===slug)||WAKWA_SERVICES[0];
+// per-service hero art (demo stand-ins — swap files, keep names)
+window.__heroImg=({'construction-haulage':'assets/img/about-site.jpg','bulk-supply':'assets/img/about-depot.jpg','longhaul-crossborder':'assets/img/project-road.jpg','tipper-services':'assets/img/fleet-highway.jpg','lowbed-machinery':'assets/img/fleet-plant.jpg','container-port':'assets/img/project-relief.jpg','water-bowser':'assets/img/fleet-highway.jpg','fuel-hazmat':'assets/img/fleet-plant.jpg','agri-produce':'assets/img/project-road.jpg','coldchain':'assets/img/fleet-warehouse.jpg','warehousing-3pl':'assets/img/fleet-warehouse.jpg','relocation':'assets/img/project-move.jpg','waste-debris':'assets/img/fleet-plant.jpg','abnormal-loads':'assets/img/project-road.jpg'})[s.slug]||'assets/img/hero-tippers.jpg';
 document.title=s.title+' | WAKWA';
 const rel=WAKWA_SERVICES.filter(x=>x.slug!==s.slug).slice(0,3);
 wrap.innerHTML=`<p><a href="services.html">← All services</a></p><p class="eyebrow">${s.icon} Service</p>

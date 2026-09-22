@@ -59,6 +59,15 @@ function mount(page){
    const at=document.createElement('link'); at.rel='apple-touch-icon';
    at.href=(assetBase()||'')+'assets/img/apple-touch-icon.png'; document.head.appendChild(at);
  }
+ if(!document.querySelector('link[rel="manifest"]')){
+   const mf=document.createElement('link'); mf.rel='manifest';
+   mf.href=(assetBase()||'')+'manifest.json'; document.head.appendChild(mf);
+ }
+ // PWA service worker (http only — skipped on file:// previews)
+ if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0){
+   const swUrl=(assetBase()||'')+'sw.js';
+   navigator.serviceWorker.register(swUrl).catch(()=>{});
+ }
  document.body.insertAdjacentHTML('afterbegin', headerHTML(page));
  document.body.insertAdjacentHTML('beforeend', footerHTML());
  // theme — stored choice wins, else OS preference
@@ -172,7 +181,7 @@ function heroize(page){
  const subs=[]; let n=h1.nextElementSibling;
  while(n&&n.tagName==='P'&&subs.length<2){ subs.push(n); n=n.nextElementSibling; }
  const sec=document.createElement('section'); sec.className='page-hero';
- let img=HERO_IMG[page]||'assets/img/hero-tippers.jpg';
+ let img=window.__heroImg||HERO_IMG[page]||'assets/img/hero-tippers.jpg';
  let crumb=HERO_CRUMB[page]||eb.textContent.trim().split('·')[0].trim()||'Page';
  try{ // pages that share a mount id (search, tools) get their own label/art
    const path=location.pathname||'';
