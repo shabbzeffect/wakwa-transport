@@ -164,8 +164,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,
 .svc-card:hover::before{width:100%}
 
 /* forms — :user-invalid upgrades every form with zero JS */
-.field{width:100%;min-height:46px;padding:11px 14px;border-radius:10px;
+.field{width:100%;max-width:100%;min-width:0;min-height:46px;padding:11px 14px;border-radius:10px;
   border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font-size:1rem;font-family:inherit}
+/* grid/flex items refuse to shrink past content by default — fields must always fit their track */
 .field:hover{border-color:var(--muted)}
 .field:focus{border-color:var(--wakwa-amber)}
 .field:user-invalid{border-color:var(--danger)}
