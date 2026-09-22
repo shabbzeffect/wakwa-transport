@@ -68,13 +68,13 @@ window.WakwaInvoices = (function () {
       ' · KRA PIN: ' + ((window.WAKWA_BILLING || {}).pin || "") + '</small></div>' +
       '<div style="text-align:right"><b class="tabular">' + inv.id + '</b><br><small>' + new Date(inv.at).toLocaleString() + '</small><br>' +
       '<span class="badge ' + (inv.status === "paid" ? "badge-ok" : "badge-warn") + '">' + inv.status.toUpperCase() + '</span></div></div>' +
-      '<table class="spec" style="margin-top:12px"><tr><th>Bill to</th><td>' + inv.client + '</td></tr>' +
+      '<div class="table-scroll" style="margin-top:12px"><table class="spec"><tr><th>Bill to</th><td>' + inv.client + '</td></tr>' +
       '<tr><th>Route / ref</th><td>' + inv.route + ' · ' + inv.ref + '</td></tr>' +
       '<tr><th>Description</th><td>' + inv.desc + '</td></tr>' +
       '<tr><th>Subtotal</th><td class="tabular">' + money(inv.sub) + '</td></tr>' +
       '<tr><th>VAT (' + inv.vatPct + '%)</th><td class="tabular">' + money(inv.vat) + '</td></tr>' +
       '<tr><th>Total</th><td class="tabular"><b>' + money(inv.total) + '</b></td></tr>' +
-      (inv.receipt ? '<tr><th>Receipt</th><td class="tabular">' + inv.receipt + ' via ' + inv.method + '</td></tr>' : '') + '</table>' +
+      (inv.receipt ? '<tr><th>Receipt</th><td class="tabular">' + inv.receipt + ' via ' + inv.method + '</td></tr>' : '') + '</table></div>' +
       '<p style="font-size:12px;color:var(--muted)">Terms: ' + ((window.WAKWA_BILLING || {}).payTerms || "") + '</p></div>';
   }
 
